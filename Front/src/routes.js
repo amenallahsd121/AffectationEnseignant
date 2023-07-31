@@ -51,7 +51,7 @@ import Icon from "@mui/material/Icon";
 const routes = [
   {
     type: "collapse",
-    name: "Dashboard",
+    name: "Gestion des utilisateurs",
     key: "dashboard",
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
@@ -59,31 +59,31 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Tables",
+    name: "Gestion des niveaux",
     key: "tables",
     icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tables",
+    route: "/Niveaux",
     component: <Tables />,
   },
   {
     type: "collapse",
-    name: "Billing",
+    name: "Gestion des classes",
     key: "billing",
     icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/billing",
+    route: "/Classes",
     component: <Billing />,
   },
+  // {
+  //   type: "collapse",
+  //   name: "Gestions des options",
+  //   key: "rtl",
+  //   icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
+  //   route: "/rtl",
+  //   component: <RTL />,
+  // },
   {
     type: "collapse",
-    name: "RTL",
-    key: "rtl",
-    icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
-    route: "/rtl",
-    component: <RTL />,
-  },
-  {
-    type: "collapse",
-    name: "Notifications",
+    name: "Affectation Enseignants  ",
     key: "notifications",
     icon: <Icon fontSize="small">notifications</Icon>,
     route: "/notifications",
@@ -112,6 +112,19 @@ const routes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/authentication/sign-up",
     component: <SignUp />,
+  },
+
+  {
+    name: "addNiveau",
+    key: "addNiveau",
+    route: "/addNiveau",
+    component: <addNiveau />,
+  },
+  {
+    name: "updateNiveau",
+    key: "updateNiveau",
+    route: "/updateNiveau",
+    component: <updateNiveau />,
   },
 ];
 
