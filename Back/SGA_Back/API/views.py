@@ -47,19 +47,11 @@ class UserLogout(APIView):
 		logout(request)
 		return Response("Déconnexion réussie !",status=status.HTTP_200_OK)
 
-
 """
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])  # Only authenticated users can access this view
-def getUserInfo(request):
-    # Get the logged-in user
-    user = request.user
-
-    # Serialize the user data
-    serializer = CustomUserSerializer(user)
-
-    # Return the serialized user data
-    return Response({'user': serializer.data}, status=status.HTTP_200_OK)
+def get_logged_in_user_info(request):
+    serializer = LoggedInUserSerializer(request.user)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 """
 
 @api_view(['GET'])
@@ -75,6 +67,12 @@ def update_user(request, id=None):
 
     serializer = CustomUserSerializer(instance=utilisateur, data=request.data)
     if serializer.is_valid():
+        # Check if the grade is set to 2, and if yes set is_superuser to True
+        grade_data = serializer.validated_data.get('grade')
+        is_superuser = any(role.id == 2 for role in grade_data)
+        if is_superuser:
+            serializer.validated_data['is_superuser'] = True
+
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
