@@ -81,13 +81,7 @@ class UserLoginSerializer(serializers.Serializer):
 
         return data
 
-"""
-class LoggedInUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Utilisateur
-        fields = ('id', 'username', 'nom_utilisateur', 'prenom_utilisateur', 'email', 'photo_de_profil', 'numero_de_telephone', 'grade')
-        read_only_fields = ('username', 'email', 'grade')  # These fields should be read-only
-"""
+
 
 
 

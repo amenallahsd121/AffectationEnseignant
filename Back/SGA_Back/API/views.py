@@ -16,6 +16,9 @@ from rest_framework.response import Response
 from rest_framework import permissions, status
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+
+from django.core.serializers.json import DjangoJSONEncoder
 
 
 
@@ -36,7 +39,23 @@ class UserLogin(APIView):
         user = serializer.validated_data['user']
         login(request, user)
 
-        return Response("Connexion réussie !", status=status.HTTP_200_OK)
+        # Serialize the 'grade' field to a list of role names
+        grade_list = list(user.grade.values_list('nom', flat=True))
+
+        # Store the user's information in the session
+        request.session['logged_in_user'] = {
+            'id': user.id,
+            'username': user.username,
+            'nom_utilisateur': user.nom_utilisateur,
+            'prenom_utilisateur': user.prenom_utilisateur,
+            'email': user.email,
+            'password': user.password,
+            'numero_de_telephone': user.numero_de_telephone,
+            'grade': grade_list,
+        }
+
+        response = {"message": "Login Successful", "data": serializer.data}
+        return Response(data=response, status=status.HTTP_200_OK)
 
 
 
@@ -47,12 +66,23 @@ class UserLogout(APIView):
 		logout(request)
 		return Response("Déconnexion réussie !",status=status.HTTP_200_OK)
 
+
 """
-@api_view(['GET'])
-def get_logged_in_user_info(request):
-    serializer = LoggedInUserSerializer(request.user)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+class GetLoggedInUserInfo(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = (SessionAuthentication,)
+
+    def get(self, request):
+        # Retrieve the logged-in user's information from the session
+        logged_in_user_info = request.session.get('logged_in_user')
+        if logged_in_user_info:
+            serializer = CustomUserSerializer(data=logged_in_user_info)
+            serializer.is_valid()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response({"message": "User not logged in"}, status=status.HTTP_401_UNAUTHORIZED)
 """
+
 
 @api_view(['GET'])
 def list_users(request):
