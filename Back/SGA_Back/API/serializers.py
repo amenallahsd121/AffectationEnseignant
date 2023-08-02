@@ -8,7 +8,7 @@ from rest_framework.exceptions import ValidationError
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Utilisateur
-        fields = ('id', 'username', 'nom_utilisateur', 'prenom_utilisateur', 'email', 'password', 'photo_de_profil', 'numero_de_telephone', 'grade')
+        fields = ('id', 'username', 'nom_utilisateur', 'prenom_utilisateur', 'email' , 'grade')
 """
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:

@@ -22,40 +22,43 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 
 
-class RegisterUserAPIView(generics.CreateAPIView):
-  permission_classes = (AllowAny,)
-  serializer_class = RegisterSerializer
+@api_view(["POST"])
+def register_user_api_view(request):
+    if request.method == "POST":
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "User registered successfully."}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserLogin(APIView):
-    permission_classes = (permissions.AllowAny,)
-    authentication_classes = (SessionAuthentication,)
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+def user_login(request):
+    data = request.data
+    serializer = UserLoginSerializer(data=data)
+    serializer.is_valid(raise_exception=True)
 
-    def post(self, request):
-        data = request.data
-        serializer = UserLoginSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
+    user = serializer.validated_data['user']
+    login(request, user)
 
-        user = serializer.validated_data['user']
-        login(request, user)
+    # Serialize the 'grade' field to a list of role names
+    grade_list = list(user.grade.values_list('nom', flat=True))
 
-        # Serialize the 'grade' field to a list of role names
-        grade_list = list(user.grade.values_list('nom', flat=True))
+    # Store the user's information in the session
+    request.session['logged_in_user'] = {
+        'id': user.id,
+        'username': user.username,
+        'nom_utilisateur': user.nom_utilisateur,
+        'prenom_utilisateur': user.prenom_utilisateur,
+        'email': user.email,
+        'password': user.password,  # Note: Storing password in session is not recommended for security reasons.
+        'numero_de_telephone': user.numero_de_telephone,
+        'grade': grade_list,
+    }
 
-        # Store the user's information in the session
-        request.session['logged_in_user'] = {
-            'id': user.id,
-            'username': user.username,
-            'nom_utilisateur': user.nom_utilisateur,
-            'prenom_utilisateur': user.prenom_utilisateur,
-            'email': user.email,
-            'password': user.password,
-            'numero_de_telephone': user.numero_de_telephone,
-            'grade': grade_list,
-        }
-
-        response = {"message": "Login Successful", "data": serializer.data}
-        return Response(data=response, status=status.HTTP_200_OK)
+    response = {"message": "Login Successful", "data": serializer.data}
+    return Response(data=response, status=status.HTTP_200_OK)
 
 
 
