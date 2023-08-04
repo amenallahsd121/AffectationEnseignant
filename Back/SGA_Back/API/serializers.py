@@ -1,14 +1,19 @@
 from rest_framework import serializers
 from Utilisateur.models import Utilisateur
-from Role.models import Role
-from django.contrib.auth import authenticate
 from rest_framework.exceptions import ValidationError
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
+    grade = serializers.SerializerMethodField()
+
     class Meta:
         model = Utilisateur
-        fields = ('id', 'username', 'nom_utilisateur', 'prenom_utilisateur', 'email' , 'grade')
+        fields = ('id', 'username', 'nom_utilisateur', 'prenom_utilisateur', 'email', 'grade')
+
+    def get_grade(self, user):
+        # Serialize the 'grade' field to a list of role names
+        grade_list = list(user.grade.values_list('nom', flat=True))
+        return grade_list
 """
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -46,19 +51,19 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             password=validated_data['password'],
             is_superuser=is_superuser,
-            is_staff=is_superuser  # Set is_staff based on is_superuser value
+            is_staff=is_superuser  # Définir is_staff en fonction de la valeur de is_superuser
         )
         validated_data['is_superuser'] = is_superuser
 
-        validated_data.pop('groups', None)  # Remove the 'groups' field if present
-        validated_data.pop('user_permissions', None)  # Remove the 'user_permissions' field if present
+        validated_data.pop('groups', None)  # Supprimer le champ "groupes" s'il est présent
+        validated_data.pop('user_permissions', None)  # Supprimer le champ 'user_permissions' s'il est présent
 
-        # Create the custom user instance and link to the Django User
+        # Créer l'instance d'utilisateur personnalisée et la lier à l'utilisateur Django
         utilisateur = Utilisateur.objects.create(**validated_data)
         utilisateur.user_ptr = user
         utilisateur.save()
 
-        utilisateur.grade.set(grade_data)  # Set the ManyToMany relationship
+        utilisateur.grade.set(grade_data)  # Définir la relation ManyToMany
         return utilisateur
 
 

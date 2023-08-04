@@ -1,24 +1,13 @@
 from rest_framework.response import Response
 from Utilisateur.models import Utilisateur
-from rest_framework.decorators import api_view , permission_classes
+from rest_framework.decorators import api_view , permission_classes , authentication_classes
 from .serializers import *
-
-from rest_framework.permissions import AllowAny
-from rest_framework.views import APIView
-from rest_framework.authentication import TokenAuthentication
-from rest_framework import generics
-
-
 from django.contrib.auth import  login, logout
-from rest_framework.authentication import SessionAuthentication
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
-from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
-from django.contrib.auth.decorators import login_required
-
-from django.core.serializers.json import DjangoJSONEncoder
+from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 
@@ -28,7 +17,7 @@ def register_user_api_view(request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "User registered successfully."}, status=status.HTTP_201_CREATED)
+            return Response({"message": "Utilisateur enregistré avec succès."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -42,49 +31,64 @@ def user_login(request):
     user = serializer.validated_data['user']
     login(request, user)
 
-    # Serialize the 'grade' field to a list of role names
+    # Mise à jour du champ last_login du modèle Django User
+    django_user = User.objects.get(username=user.username)
+    django_user.last_login = timezone.now()
+    django_user.save()
+
+    # Sérialiser le champ 'grade' en une liste de noms de rôles
     grade_list = list(user.grade.values_list('nom', flat=True))
 
-    # Store the user's information in the session
+    # Stocker les informations de l'utilisateur dans la session
     request.session['logged_in_user'] = {
         'id': user.id,
         'username': user.username,
         'nom_utilisateur': user.nom_utilisateur,
         'prenom_utilisateur': user.prenom_utilisateur,
         'email': user.email,
-        'password': user.password,  # Note: Storing password in session is not recommended for security reasons.
         'numero_de_telephone': user.numero_de_telephone,
         'grade': grade_list,
     }
 
-    response = {"message": "Login Successful", "data": serializer.data}
+    response = {"message": "Connexion avec succès!", "data": serializer.data}
     return Response(data=response, status=status.HTTP_200_OK)
 
 
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+@authentication_classes([])
+def user_logout(request):
+    if 'logged_in_user' in request.session:
+        session_data = request.session['logged_in_user']
+        logout(request)
+    else:
+        session_data = None
 
-class UserLogout(APIView):
-	permission_classes = (permissions.AllowAny,)
-	authentication_classes = ()
-	def post(self, request):
-		logout(request)
-		return Response("Déconnexion réussie !",status=status.HTTP_200_OK)
+    return Response({
+        'message': "Déconnexion réussie!",
+        'session_data': session_data,  # Renvoyer les données de la session dans la réponse
+    }, status=status.HTTP_200_OK)
 
 
-"""
-class GetLoggedInUserInfo(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
-    authentication_classes = (SessionAuthentication,)
+@api_view(['GET'])
+@permission_classes([permissions.AllowAny])
+@authentication_classes([])
+def get_logged_in_user_info(request):
+ # Vérifier si l'utilisateur est connecté
+    if 'logged_in_user' in request.session:
+        session_data = request.session['logged_in_user']
+        user_id = session_data['id']
 
-    def get(self, request):
-        # Retrieve the logged-in user's information from the session
-        logged_in_user_info = request.session.get('logged_in_user')
-        if logged_in_user_info:
-            serializer = CustomUserSerializer(data=logged_in_user_info)
-            serializer.is_valid()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        # Récupérer les informations de l'utilisateur connecté à partir des données de session définies lors de la connexion
+        if user_id:
+            try:
+                utilisateur = Utilisateur.objects.get(id=user_id)
+                serializer = CustomUserSerializer(utilisateur)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except Utilisateur.DoesNotExist:
+                return Response({"message": "Utilisateur non trouvé."}, status=status.HTTP_404_NOT_FOUND)
 
-        return Response({"message": "User not logged in"}, status=status.HTTP_401_UNAUTHORIZED)
-"""
+    return Response({"message": "Utilisateur non connecté."}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 @api_view(['GET'])
@@ -98,23 +102,39 @@ def list_users(request):
 def update_user(request, id=None):
     utilisateur = get_object_or_404(Utilisateur, id=id)
 
-    serializer = CustomUserSerializer(instance=utilisateur, data=request.data)
+    serializer = RegisterSerializer(instance=utilisateur, data=request.data)
     if serializer.is_valid():
-        # Check if the grade is set to 2, and if yes set is_superuser to True
-        grade_data = serializer.validated_data.get('grade')
+        # Mettre à jour les données relatives au grade
+        grade_data = serializer.validated_data.pop('grade')
         is_superuser = any(role.id == 2 for role in grade_data)
-        if is_superuser:
-            serializer.validated_data['is_superuser'] = True
 
+        try:
+            user = User.objects.get(username=utilisateur.username)
+            user.username = serializer.validated_data['username']
+            user.email = serializer.validated_data['email']
+            user.is_superuser = is_superuser
+            user.is_staff = is_superuser
+            user.save()
+        except User.DoesNotExist:
+            pass  
+
+        
+        serializer.validated_data['is_superuser'] = is_superuser
         serializer.save()
+
+        utilisateur.grade.set(grade_data)  
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['DELETE'])
 def delete_user(request, id=None):
-    utilisateur = Utilisateur.objects.get(id=id)
+    try:
+        utilisateur = Utilisateur.objects.get(id=id)
+        utilisateur.delete()
+        return Response("Utilisateur supprimé avec succès!")
+    except Utilisateur.DoesNotExist:
+        return Response("Utilisateur non trouvé.", status=status.HTTP_404_NOT_FOUND)
 
-    utilisateur.delete()
-    return Response("Utilisateur supprimer avec succés!")
     

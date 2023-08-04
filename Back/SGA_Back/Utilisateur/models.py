@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 from django.db import models
+from django.contrib.auth.models import User
 from Role.models import Role
 
 
@@ -38,7 +39,19 @@ class Utilisateur(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.username
     
-    # Add related_name to the groups and user_permissions fields
+    def delete(self, *args, **kwargs):
+        # Récupère l'objet Django User associé et le supprime
+        try:
+            user = User.objects.get(username=self.username)
+            user.delete()
+        except User.DoesNotExist:
+            pass  # L'objet utilisateur n'existe peut-être pas
+
+       # Supprimer l'objet Utilisateur
+        super().delete(*args, **kwargs)
+    
+    
+    # Ajouter related_name aux champs groups et user_permissions
     groups = models.ManyToManyField(
         'auth.Group',
         verbose_name='groups',
@@ -55,7 +68,7 @@ class Utilisateur(AbstractBaseUser, PermissionsMixin):
     )
 
 
-    objects = CustomUserManager()  # Set the custom user manager as the objects attribute
+    objects = CustomUserManager()  # Définir le gestionnaire d'utilisateurs personnalisé comme attribut d'objets
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
