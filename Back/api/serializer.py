@@ -10,7 +10,8 @@ class NiveauSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ClasseSerializer(serializers.ModelSerializer):
-
+    niveau_nom = serializers.ReadOnlyField(source='niveau.nom') 
+    
     class Meta:
         model = Classe
-        fields = '__all__'
+        fields = ['id', 'nom', 'niveau_nom']  

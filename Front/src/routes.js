@@ -39,11 +39,12 @@ Coded by www.creative-tim.com
 import Dashboard from "layouts/dashboard";
 import Tables from "layouts/tables";
 import Billing from "layouts/billing";
-import RTL from "layouts/rtl";
 import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
+import AddNiveau from "layouts/tables/AddNiveau";
+import UpdateNiveau from "layouts/tables/UpdateNiveau";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -115,16 +116,19 @@ const routes = [
   },
 
   {
-    name: "addNiveau",
-    key: "addNiveau",
-    route: "/addNiveau",
-    component: <addNiveau />,
+    name: "Ajouter Niveau",
+    key: "AjouterNiveau",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/AddNiveau",
+    component: <AddNiveau />,
   },
+
   {
-    name: "updateNiveau",
-    key: "updateNiveau",
-    route: "/updateNiveau",
-    component: <updateNiveau />,
+    name: "Edit Niveau",
+    key: "ModifierNiveau",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/updateNiveau/:id",
+    component: <UpdateNiveau />,
   },
 ];
 

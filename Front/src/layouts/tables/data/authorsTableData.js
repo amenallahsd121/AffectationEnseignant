@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { getNiveaux } from "../../../service/api"; // Replace this with the correct path to your API file
+import { getNiveaux, deleteNiveau } from "../../../service/api";
 import { useNavigate } from "react-router-dom";
+
+/* eslint-disable react/prop-types */
+/* eslint-disable react/jsx-key */
 
 export default function DataTable() {
   const navigate = useNavigate();
   const [dataRows, setDataRows] = useState([]);
 
-  useEffect(() => {
-    // Fetch data from the API using the getNiveaux function
+  const fetchData = () => {
     getNiveaux()
       .then((response) => {
-        // Assuming the response.data contains an array of objects with "nom" and "nombre_de_classe" properties
         const newDataRows = response.data.map((item) => ({
+          id: item.id,
           nom: item.nom,
           nombreclasse: item.nombreclasse,
         }));
@@ -20,68 +22,85 @@ export default function DataTable() {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, []); // The empty dependency array makes this effect run only once, similar to componentDidMount
-
-  // Function to handle button click
-  const handleButtonClick1 = () => {
-    // Add your logic for what happens when the first button is clicked
-    navigate("/updateNiveau");
   };
 
-  // Function to handle button click
-  const handleButtonClick2 = () => {
-    // Add your logic for what happens when the second button is clicked
-    console.log("Button 2 clicked!");
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleButtonClick1 = (id) => {
+    navigate(`/updateNiveau/${id}`);
   };
+
+  const handleButtonClick2 = (id) => {
+    const confirmDelete = window.confirm("Voulez-vous vraiment supprimer ?");
+    if (confirmDelete) {
+      deleteNiveau(id)
+        .then(() => {
+          fetchData(); // Fetch data again after successful deletion
+          navigate(`/Niveaux`);
+        })
+        .catch((error) => {
+          console.error("Error deleting Niveau:", error);
+        });
+    }
+  };
+
   return {
     columns: [
       {
         Header: "Nom",
         accessor: "nom",
         width: "30%",
-        align: "left",
+        align: "center",
+        Cell: ({ value }) => <div style={{ fontSize: "18px", fontWeight: "bold" }}>{value}</div>,
       },
       {
         Header: "Nombre de classe",
         accessor: "nombreclasse",
         width: "30%",
-        align: "left",
+        align: "center",
+        Cell: ({ value }) => <div style={{ fontSize: "18px", fontWeight: "bold" }}>{value}</div>,
       },
       {
         Header: "Action",
         accessor: "action",
         width: "40%",
         align: "center",
-        Cell: () => (
-          <>
+        Cell: ({ row }) => (
+          <div style={{ display: "flex", justifyContent: "center" }}>
             <button
-              onClick={handleButtonClick1}
+              onClick={() => handleButtonClick1(row.original.id)}
               style={{
-                backgroundColor: "blue",
+                backgroundColor: "blue", // Change the background color to blue
                 color: "white",
                 padding: "8px 16px",
                 border: "none",
                 borderRadius: "4px",
                 cursor: "pointer",
                 marginRight: "8px",
+                fontSize: "14px",
+                fontWeight: "bold",
               }}
             >
               Modifier
             </button>
             <button
-              onClick={handleButtonClick2}
+              onClick={() => handleButtonClick2(row.original.id)}
               style={{
-                backgroundColor: "blue",
+                backgroundColor: "red", // Change the background color to red
                 color: "white",
                 padding: "8px 16px",
                 border: "none",
                 borderRadius: "4px",
                 cursor: "pointer",
+                fontSize: "14px",
+                fontWeight: "bold",
               }}
             >
               Supprimer
             </button>
-          </>
+          </div>
         ),
       },
     ],

@@ -1,6 +1,6 @@
 from django.db import models
 
-# Create your models here.
+
 class Niveau(models.Model):
     nom=models.CharField(max_length=10,null=True)
     nombreclasse=models.IntegerField(null=True)

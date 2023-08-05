@@ -38,8 +38,7 @@ function Tables() {
   const { columns: pColumns, rows: pRows } = projectsTableData();
   const navigate = useNavigate();
   const handleButtonClick = () => {
-    // Add your logic for what happens when the second button is clicked
-    navigate("/addNiveau");
+    navigate("/AddNiveau");
   };
 
   return (
@@ -58,20 +57,27 @@ function Tables() {
                 bgColor="info"
                 borderRadius="lg"
                 coloredShadow="info"
+                position="relative"
+                display="flex" // Add display flex
+                alignItems="center" // Center align vertically
               >
                 <MDTypography variant="h6" color="white">
                   Liste des niveaux
                   <button
                     onClick={handleButtonClick}
                     style={{
-                      backgroundColor: "blue",
+                      backgroundColor: "blue", // Change to green color
                       color: "white",
-                      padding: "8px 16px",
+                      padding: "12px 20px", // Increase padding for bigger size
                       border: "none",
                       borderRadius: "4px",
                       cursor: "pointer",
                       position: "absolute",
-                      right: "40px",
+                      top: "50%", // Adjust top to center vertically
+                      transform: "translateY(-50%)", // Center vertically using translateY
+                      right: "16px", // Adjust right property for spacing
+                      fontSize: "14px", // Increase font size
+                      fontWeight: "bold", // Set font weight to bold
                     }}
                   >
                     Ajouter

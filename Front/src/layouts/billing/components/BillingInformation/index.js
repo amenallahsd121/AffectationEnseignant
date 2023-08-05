@@ -1,60 +1,61 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// @mui material components
+import React, { useState, useEffect } from "react";
 import Card from "@mui/material/Card";
-
-// Material Dashboard 2 React components
-import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
-
-// Billing page components
-import Bill from "layouts/billing/components/Bill";
+import CardContent from "@mui/material/CardContent";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import { getClasses } from "../../../../service/api";
 
 function BillingInformation() {
+  const [billingData, setBillingData] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await getClasses();
+        console.log("API Response:", response.data);
+        setBillingData(response.data);
+      } catch (error) {
+        console.error("Error fetching class data:", error);
+      }
+    }
+
+    fetchData();
+  }, []);
+
   return (
-    <Card id="delete-account">
-      <MDBox pt={3} px={2}>
-        <MDTypography variant="h6" fontWeight="medium">
-          Billing Information
-        </MDTypography>
-      </MDBox>
-      <MDBox pt={1} pb={2} px={2}>
-        <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-          <Bill
-            name="oliver liam"
-            company="viking burrito"
-            email="oliver@burrito.com"
-            vat="FRB1235476"
-          />
-          <Bill
-            name="lucas harper"
-            company="stone tech zone"
-            email="lucas@stone-tech.com"
-            vat="FRB1235476"
-          />
-          <Bill
-            name="ethan james"
-            company="fiber notion"
-            email="ethan@fiber.com"
-            vat="FRB1235476"
-            noGutter
-          />
-        </MDBox>
-      </MDBox>
-    </Card>
+    <Box id="billing-information">
+      <h6 style={{ fontWeight: "medium" }}>Classes</h6>
+      <Box pt={1} pb={2}>
+        {billingData.map((item) => (
+          <Card key={item.id} variant="outlined" style={{ marginBottom: "16px" }}>
+            <CardContent>
+              <Box display="flex" alignItems="center">
+                <Box flex="1">
+                  <p>
+                    <strong>Nom du Classe :</strong> {item.nom}
+                  </p>
+                  <p>
+                    <strong>Niveau :</strong> {item.niveau_nom}
+                  </p>
+                </Box>
+                <Box>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    style={{ marginRight: "8px", color: "white" }}
+                  >
+                    Modifier
+                  </Button>
+                  <Button variant="contained" style={{ backgroundColor: "red", color: "white" }}>
+                    Supprimer
+                  </Button>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+        ))}
+      </Box>
+    </Box>
   );
 }
 

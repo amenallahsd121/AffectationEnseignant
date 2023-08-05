@@ -2,6 +2,8 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from Niveau.models import Niveau
+from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
 
 class Classe(models.Model):
     nom = models.CharField(max_length=50, null=True)
@@ -10,18 +12,27 @@ class Classe(models.Model):
     def __str__(self):
         return f"Classe: {self.nom}"
 
-    def save(self, *args, **kwargs):
-        if not self.nom:
-            # Generate the 'nom' field by concatenating 'Niveau' name with the number of the 'Classe' object
-            num_classe = Classe.objects.filter(niveau=self.niveau).count() + 1
-            self.nom = f"{self.niveau.nom}{num_classe}"
-        super(Classe, self).save(*args, **kwargs)
+def update_classes(sender, instance, **kwargs):
+    try:
+        old_instance = Niveau.objects.get(pk=instance.pk)
+        if old_instance.nombreclasse != instance.nombreclasse:
+            Classe.objects.filter(niveau=instance).delete() 
+            for i in range(instance.nombreclasse):
+                num_classe = Classe.objects.filter(niveau=instance).count() + 1
+                nom = f"{instance.nom}{num_classe}"
+                
+                classe = Classe(niveau=instance, nom=nom)
+                classe.save()
+    except Niveau.DoesNotExist:
+        pass
 
 @receiver(post_save, sender=Niveau)
 def create_classes(sender, instance, created, **kwargs):
     if created and instance.nombreclasse:
         for i in range(instance.nombreclasse):
-            classe = Classe(niveau=instance)  # Create the Classe instance
-            classe.save()  # Save the Classe instance to generate the 'nom' field
+            classe = Classe(niveau=instance)
+            classe.save()
 
+
+pre_save.connect(update_classes, sender=Niveau)
 post_save.connect(create_classes, sender=Niveau)
