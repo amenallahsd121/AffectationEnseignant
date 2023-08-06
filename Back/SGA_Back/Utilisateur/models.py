@@ -74,7 +74,4 @@ class Utilisateur(AbstractBaseUser, PermissionsMixin):
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = ['nom_utilisateur', 'prenom_utilisateur', 'email', 'password', 'grade']
 
-    
-
-
 
