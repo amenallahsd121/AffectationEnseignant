@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from Utilisateur.models import Utilisateur
-from rest_framework.decorators import api_view , permission_classes , authentication_classes
+from rest_framework.decorators import api_view , permission_classes , authentication_classes ,parser_classes
 from .serializers import *
 from django.contrib.auth import  login, logout
 from rest_framework.response import Response
@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 
+#Utilisateur
 
 @api_view(["POST"])
 def register_user_api_view(request):
@@ -137,4 +138,169 @@ def delete_user(request, id=None):
     except Utilisateur.DoesNotExist:
         return Response("Utilisateur non trouvé.", status=status.HTTP_404_NOT_FOUND)
 
+
+
+# Option
+
+@api_view(['GET'])
+def getOptions(request):
+    options = Option.objects.all()
+    serializer = OptionSerializer(options, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def getOption(request, id=None):
+    option = Option.objects.get(id=id)
+    serializer = OptionSerializer(option)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def addOption(request):
+    serializer = OptionSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+def updateOption(request, id=None):
+    option = Option.objects.get(id=id)
+    serializer = OptionSerializer(instance=option, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+def deleteOption(request, id=None):
+    option = Option.objects.get(id=id)
+    option.delete()
+    return Response("Option deleted")
+
+
+# Niveau
+
+@api_view(['GET'])
+def getNiveaux(request):
+    niveau = Niveau.objects.all()
+    serializer = NiveauSerializer(niveau, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def getNiveau(request,id=None):
+    niveau = Niveau.objects.get(id=id)
+    serializer = NiveauSerializer(niveau)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+@api_view(['POST'])
+def addNiveau(request):
+    serializer = NiveauSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+def updateNiveau(request, id=None , nb=None):
+    niveau = Niveau.objects.get(id=id)
+    print(niveau.nombreclasse)
+    niveau.nombreclasse = nb
+    print(niveau.nombreclasse)
+
+    serializer = NiveauSerializer(instance=niveau, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['DELETE'])
+def deleteNiveau(request, id=None):
+    niveau = Niveau.objects.get(id=id)
+
+    niveau.delete()
+    return Response("Niveau deleted")
+
+# Classe
+
+@api_view(['GET'])
+def getClasses(request):
+    classe = Classe.objects.all()
+    serializer = ClasseSerializer(classe, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def getClasse(request,id=None):
+    classe = Classe.objects.get(id=id)
+    serializer = ClasseSerializer(classe)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+def addClasse(request):
+    serializer = ClasseSerializer(data=request.data)
+    if serializer.is_valid():
+        niveau = serializer.validated_data['niveau']
+        option = serializer.validated_data.get('option')
+
+        if niveau.nom in ["4", "5"]:
+            if not option:
+                return Response("Option est requise pou les niveaux 4 or 5.", status=status.HTTP_400_BAD_REQUEST)
+
+            if option.nb_classes > niveau.nombreclasse:
+                return Response("Pas assez de classes pour cette option.", status=status.HTTP_400_BAD_REQUEST)
+
+            for i in range(option.nb_classes):
+                num_classe = Classe.objects.filter(niveau=niveau).count() + 1
+                nom_classe = f"{niveau.nom}{option.nom}{num_classe}"
+                print(nom_classe)
+                Classe.objects.create(niveau=niveau, option=option, nom=nom_classe).save()
+                
+                print(Classe.nom)
+            """
+            print(niveau.nombreclasse)
+            niveau.nombreclasse -= option.nb_classes
+            print(niveau.nombreclasse)
+            print('***********************')
+            
+            updateNiveau(request, id=niveau.id,nb=niveau.nombreclasse)
+            """
+        else:
+            for i in range(niveau.nombreclasse):
+                num_classe = Classe.objects.filter(niveau=niveau).count() + 1
+                nom = f"{niveau.nom}{num_classe}"
+                Classe.objects.create(niveau=niveau, nom=nom)
+
+                
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
+    
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+@api_view(['PUT'])
+def updateClasse(request, id=None):
+    classe = Classe.objects.get(id=id)
+    serializer = ClasseSerializer(instance=classe, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['DELETE'])
+def deleteClasse(request, id=None):
+    classe = Classe.objects.get(id=id)
+    classe.delete()
+    return Response("Niveau deleted")

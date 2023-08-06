@@ -1,7 +1,13 @@
 from rest_framework import serializers
 from Utilisateur.models import Utilisateur
+from Niveau.models import Niveau
+from Option.models import Option
+from Classe.models import Classe
 from rest_framework.exceptions import ValidationError
 
+
+
+#Utilisateur 
 
 class CustomUserSerializer(serializers.ModelSerializer):
     grade = serializers.SerializerMethodField()
@@ -85,6 +91,31 @@ class UserLoginSerializer(serializers.Serializer):
             raise ValidationError('Informations d identification non valides. Veuillez vérifier votre courriel et votre mot de passe.')
 
         return data
+
+
+# Option
+class OptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Option
+        fields = '__all__'
+
+# Niveau 
+class NiveauSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Niveau
+        fields = '__all__'
+
+# Classe
+class ClasseSerializer(serializers.ModelSerializer):
+    niveau = serializers.PrimaryKeyRelatedField(queryset=Niveau.objects.all())
+    option = serializers.PrimaryKeyRelatedField(queryset=Option.objects.all(), required=False)
+
+    class Meta:
+        model = Classe
+        fields = ['id' , 'niveau' , 'option']
+
+ 
+
 
 
 
