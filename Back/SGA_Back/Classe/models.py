@@ -14,18 +14,19 @@ class Classe(models.Model):
 
 
 def update_classes(sender, instance, **kwargs):
-    try:
-        old_instance = Niveau.objects.get(pk=instance.pk)
-        if old_instance.nombreclasse != instance.nombreclasse:
-            Classe.objects.filter(niveau=instance).delete() 
-            for i in range(instance.nombreclasse):
-                num_classe = Classe.objects.filter(niveau=instance).count() + 1
-                nom = f"{instance.nom}{num_classe}"
-                
-                classe = Classe(niveau=instance, nom=nom)
-                classe.save()
-    except Niveau.DoesNotExist:
-        pass
+    if instance.nom not in ["4", "5"]:
+        try:
+            old_instance = Niveau.objects.get(pk=instance.pk)
+            if old_instance.nombreclasse != instance.nombreclasse:
+                Classe.objects.filter(niveau=instance).delete() 
+                for i in range(instance.nombreclasse):
+                    num_classe = Classe.objects.filter(niveau=instance).count() + 1
+                    nom = f"{instance.nom}{num_classe}"
+                    
+                    classe = Classe(niveau=instance, nom=nom)
+                    classe.save()
+        except Niveau.DoesNotExist:
+            pass
 
 
 @receiver(post_save, sender=Niveau)

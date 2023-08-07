@@ -206,11 +206,9 @@ def addNiveau(request):
 
 
 
-def updateNiveau(request, id=None , nb=None):
+@api_view(['PUT'])
+def updateNiveau(request, id=None):
     niveau = Niveau.objects.get(id=id)
-    print(niveau.nombreclasse)
-    niveau.nombreclasse = nb
-    print(niveau.nombreclasse)
 
     serializer = NiveauSerializer(instance=niveau, data=request.data)
     if serializer.is_valid():
@@ -251,39 +249,38 @@ def addClasse(request):
 
         if niveau.nom in ["4", "5"]:
             if not option:
-                return Response("Option est requise pou les niveaux 4 or 5.", status=status.HTTP_400_BAD_REQUEST)
+                return Response("Option est requise pour les niveaux 4 ou 5.", status=status.HTTP_400_BAD_REQUEST)
 
             if option.nb_classes > niveau.nombreclasse:
                 return Response("Pas assez de classes pour cette option.", status=status.HTTP_400_BAD_REQUEST)
 
+            # Get the latest num_classe for the given option
+            latest_num_classe = Classe.objects.filter(niveau=niveau, option=option).order_by('-nom').first()
+            if latest_num_classe:
+                latest_num = int(latest_num_classe.nom.split(option.nom)[1])
+            else:
+                latest_num = 0
+
             for i in range(option.nb_classes):
-                num_classe = Classe.objects.filter(niveau=niveau).count() + 1
+                num_classe = latest_num + i + 1
                 nom_classe = f"{niveau.nom}{option.nom}{num_classe}"
-                print(nom_classe)
-                Classe.objects.create(niveau=niveau, option=option, nom=nom_classe).save()
-                
-                print(Classe.nom)
-            """
-            print(niveau.nombreclasse)
+                Classe.objects.create(niveau=niveau, option=option, nom=nom_classe)
+
+            # Decrement the nombreclasse of niveau by option.nb_classes
             niveau.nombreclasse -= option.nb_classes
-            print(niveau.nombreclasse)
-            print('***********************')
-            
-            updateNiveau(request, id=niveau.id,nb=niveau.nombreclasse)
-            """
+            niveau.save()  # Save the updated niveau
+
         else:
             for i in range(niveau.nombreclasse):
                 num_classe = Classe.objects.filter(niveau=niveau).count() + 1
                 nom = f"{niveau.nom}{num_classe}"
                 Classe.objects.create(niveau=niveau, nom=nom)
 
-                
-
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
-    
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 
