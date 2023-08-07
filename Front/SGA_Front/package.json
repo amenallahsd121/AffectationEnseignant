@@ -1,74 +1,77 @@
 {
-  "name": "material-dashboard-2-react",
-  "version": "2.2.0",
-  "private": true,
-  "author": "Creative Tim",
-  "license": "See license in https://www.creative-tim.com/license",
-  "description": "React version of Material Dashboard 2 by Creative Tim",
-  "bugs": {
-    "url": "https://github.com/creativetimofficial/material-dashboard-react/issues"
-  },
+  "name": "argon-dashboard-react",
+  "version": "1.2.3",
+  "description": "React version of Argon Dashboard by Creative Tim",
+  "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/creativetimofficial/material-dashboard-react.git"
+    "url": "git+https://github.com/creativetimofficial/argon-dashboard-react.git"
   },
-  "dependencies": {
-    "@emotion/cache": "11.10.8",
-    "@emotion/react": "11.10.8",
-    "@emotion/styled": "11.10.8",
-    "@mui/icons-material": "5.11.16",
-    "@mui/material": "5.12.3",
-    "axios": "^1.4.0",
-    "chart.js": "4.3.0",
-    "chroma-js": "2.4.2",
-    "prop-types": "15.8.1",
-    "react": "18.2.0",
-    "react-chartjs-2": "5.2.0",
-    "react-dom": "18.2.0",
-    "react-github-btn": "1.4.0",
-    "react-router-dom": "6.11.0",
-    "react-scripts": "^5.0.1",
-    "react-table": "7.8.0",
-    "stylis": "4.1.4",
-    "stylis-plugin-rtl": "2.1.1",
-    "yup": "1.1.1"
+  "keywords": [
+    "react",
+    "reactjs",
+    "argon",
+    "argon-react",
+    "dashboard",
+    "dashboard-react",
+    "argon-dashboard",
+    "argon-dashboard-react"
+  ],
+  "author": "Creative Tim",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/creativetimofficial/argon-dashboard-react/issues"
   },
+  "homepage": "https://demos.creative-tim.com/argon-dashboard-react/",
   "scripts": {
-    "start": "set GENERATE_SOURCEMAP=false && react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start"
+    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
+    "compile:scss": "sass src/assets/scss/argon-dashboard-react.scss src/assets/css/argon-dashboard-react.css",
+    "minify:scss": "sass src/assets/scss/argon-dashboard-react.scss src/assets/css/argon-dashboard-react.min.css --style compressed",
+    "build:scss": "npm run compile:scss && npm run minify:scss && npm run map:scss"
   },
   "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "extends": "react-app"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "6.4.0",
+    "axios": "^1.4.0",
+    "bootstrap": "4.6.2",
+    "chart.js": "2.9.4",
+    "classnames": "2.3.2",
+    "cors": "^2.8.5",
+    "moment": "2.29.4",
+    "nouislider": "15.4.0",
+    "react": ">=16.0.0",
+    "react-chartjs-2": "2.11.2",
+    "react-copy-to-clipboard": "5.1.0",
+    "react-datetime": "3.2.0",
+    "react-dom": ">=16.0.0",
+    "react-router-dom": "6.11.1",
+    "react-scripts": "5.0.1",
+    "reactstrap": "8.10.0",
+    "sass": "1.62.1"
   },
-  "devDependencies": {
-    "eslint": "8.39.0",
-    "eslint-config-prettier": "8.8.0",
-    "eslint-plugin-import": "2.27.5",
-    "eslint-plugin-jsx-a11y": "6.7.1",
-    "eslint-plugin-prettier": "4.2.1",
-    "eslint-plugin-react": "7.32.2",
-    "eslint-plugin-react-hooks": "4.6.0",
-    "prettier": "2.8.8"
+  "peerDependencies": {
+    "react": ">=16.0.0",
+    "react-dom": ">=16.0.0"
+  },
+  "optionalDependencies": {
+    "eslint-plugin-flowtype": "8.0.3",
+    "typescript": "5.0.4"
   },
   "overrides": {
-    "svgo": "3.0.2"
+    "svgo": "3.0.2",
+    "fsevents": "2.3.2",
+    "chokidar": "3.5.3"
   }
 }
