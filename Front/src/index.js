@@ -1,33 +1,39 @@
-/**
+/*!
+
 =========================================================
-* Material Dashboard 2 React - v2.2.0
+* Argon Dashboard React - v1.2.3
 =========================================================
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
+* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
 * Copyright 2023 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
 
-Coded by www.creative-tim.com
+* Coded by Creative Tim
 
 =========================================================
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
 */
-
 import React from "react";
-import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import App from "App";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
-// Material Dashboard 2 React Context Provider
-import { MaterialUIControllerProvider } from "context";
+import "assets/plugins/nucleo/css/nucleo.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import "assets/scss/argon-dashboard-react.scss";
 
-const container = document.getElementById("app");
-const root = createRoot(container);
+import AdminLayout from "layouts/Admin.js";
+import AuthLayout from "layouts/Auth.js";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <BrowserRouter>
-    <MaterialUIControllerProvider>
-      <App />
-    </MaterialUIControllerProvider>
+    <Routes>
+      <Route path="/admin/*" element={<AdminLayout />} />
+      <Route path="/auth/*" element={<AuthLayout />} />
+      <Route path="*" element={<Navigate to="/admin/index" replace />} />
+    </Routes>
   </BrowserRouter>
 );

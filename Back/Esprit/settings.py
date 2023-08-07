@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     'Niveau',
     'rest_framework',
     'corsheaders',
+    'Role',
+    'Utilisateur',
+    'Conges',
 ]
 
 

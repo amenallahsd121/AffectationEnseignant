@@ -18,7 +18,7 @@ def update_classes(sender, instance, **kwargs):
         if old_instance.nombreclasse != instance.nombreclasse:
             Classe.objects.filter(niveau=instance).delete() 
             for i in range(instance.nombreclasse):
-                num_classe = Classe.objects.filter(niveau=instance).count() + 1
+                num_classe = i + 1
                 nom = f"{instance.nom}{num_classe}"
                 
                 classe = Classe(niveau=instance, nom=nom)
@@ -30,9 +30,11 @@ def update_classes(sender, instance, **kwargs):
 def create_classes(sender, instance, created, **kwargs):
     if created and instance.nombreclasse:
         for i in range(instance.nombreclasse):
-            classe = Classe(niveau=instance)
+            num_classe = i + 1
+            nom = f"{instance.nom}{num_classe}"
+            
+            classe = Classe(niveau=instance, nom=nom)
             classe.save()
-
 
 pre_save.connect(update_classes, sender=Niveau)
 post_save.connect(create_classes, sender=Niveau)
