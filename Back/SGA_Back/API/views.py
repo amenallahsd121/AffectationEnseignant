@@ -98,6 +98,12 @@ def list_users(request):
     serializer = CustomUserSerializer(utilisateur, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+def list_user(request,id=None):
+    utilisateur = Utilisateur.objects.get(id=id)
+    serializer = CustomUserSerializer(utilisateur)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 @api_view(['PUT'])
 def update_user(request, id=None):

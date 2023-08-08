@@ -8,6 +8,7 @@ urlpatterns = [
     path('logout', user_logout, name='logout'),
     path('user-info', get_logged_in_user_info, name='user-info'),
     path('list_users', list_users, name='list_users'),
+    path('list_user/<int:id>', list_user, name='list_user'),
     path('update_user/<int:id>', update_user, name='update_user'),
     path('delete_user/<int:id>', delete_user, name='delete_user'),
 
