@@ -10,13 +10,14 @@ import {
   Container,
   Row,
   Col,
+  CustomInput,
 } from "reactstrap";
 import Header from "components/Headers/Header";
-import { list_users } from "service/api";
+import { list_user } from "service/api";
 import { useNavigate, useParams } from "react-router-dom";
 import { update_user } from "service/api";
 
-const modifierUtilisateur = () => {
+const ModifierUtilisateur = () => {
 
     const roles = [
         { id: "1", value: "Enseignant" },
@@ -34,20 +35,24 @@ const modifierUtilisateur = () => {
   const [nom_utilisateur, setNomUtilisateur] = useState("");
   const [prenom_utilisateur, setPrenomUtilisateur] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [photo_de_profil, setPhotoDeProfil] = useState("");
   const [numero_de_telephone, setNumeroDeTelephone] = useState("");
-  const [grade, setGrade] = useState("");
+  const [grade, setGrade] = useState([]);
+
 
 
   useEffect(() => {
     const fetchUtilisateurDetails = async () => {
       try {
-        const response = await list_users(id);
-        const utilisateur = response.data;
+        const response = await list_user(id);
+        console.log("API Response:", response);
+        const utilisateur = response;
         setUsername(utilisateur.username);
         setNomUtilisateur(utilisateur.nom_utilisateur);
         setPrenomUtilisateur(utilisateur.prenom_utilisateur);
         setEmail(utilisateur.email);
+        setPassword(utilisateur.password);
         setPhotoDeProfil(utilisateur.photo_de_profil);
         setNumeroDeTelephone(utilisateur.numero_de_telephone);
         setGrade(utilisateur.grade);
@@ -60,18 +65,19 @@ const modifierUtilisateur = () => {
   }, [id]);
 
   const handleModifierClick = async () => {
-    if (username && nom_utilisateur&& prenom_utilisateur&&email&&password&&grade) {
+    if (username&&nom_utilisateur&& prenom_utilisateur&&email&&password&&grade) {
       try {
-        await update_user(id, {
+        const response = await update_user(id, {
           username: username,
           nom_utilisateur: nom_utilisateur,
           prenom_utilisateur: prenom_utilisateur,
           email: email,
           password: password,
-          photo_de_profil: photo_de_profil,
-          numero_de_telephone: numero_de_telephone,
+          photo_de_profil: null,
+          numero_de_telephone: '',
           grade: grade,          
         });
+        console.log(response.data);
         navigate("/admin/tables");
       } catch (error) {
         console.error("Erreur lors de la modification du utilisateur:", error);
@@ -186,6 +192,65 @@ const modifierUtilisateur = () => {
                         </FormGroup>
                       </Col>
                     </Row>
+                     <Row>
+                      <Col xs="12">
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-country"
+                          >
+                           Mot De Passe
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            id="password"
+                            placeholder="Mot De Passe"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col xs="12">
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-country"
+                          >
+                           Photo De Profil
+                          </label>
+                          <Input
+                              type="file"
+                              name="photo_de_profil"
+                              id="photo"
+                              accept=".jpg,.jpeg,.png"
+                              onChange={(e) => setPhotoDeProfil(e.target.value)}
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                     <Row>
+                      <Col xs="12">
+                      <FormGroup>
+                            <label className="form-control-label" htmlFor="input-country">
+                              Grade
+                            </label>
+                            <CustomInput
+                              type="select"
+                              name="grade"
+                              id="role-select" 
+                              value={grade}
+                              onChange={(e) => setGrade(e.target.value)}
+                            >
+                              {roles.map(role => (
+                                <option key={role.id} value={role.id}>{role.value}</option>
+                              ))}
+                            </CustomInput>
+                        </FormGroup>
+                      </Col>
+                    </Row>
                     <Row className="justify-content-center">
                       <Col xs="12" className="text-center">
                         <Button color="primary" onClick={handleModifierClick}>
@@ -211,4 +276,4 @@ const modifierUtilisateur = () => {
   );
 };
 
-export default ModifierNiveau;
+export default ModifierUtilisateur;

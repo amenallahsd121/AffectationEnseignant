@@ -5,6 +5,7 @@ import Maps from "views/examples/Maps.js";
 import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
 import Tables from "views/examples/Tables.js";
+import Update_User from "views/examples/Update_User.js";
 import Icons from "views/examples/Icons.js";
 import Niveaux from "views/examples/Niveaux";
 
@@ -66,6 +67,14 @@ var routes = [
     icon: "ni ni-circle-08 text-pink",
     component: <Register />,
     layout: "/auth",
+  },
+  {
+    path: "/modifierUtilisateur/:id",
+    name: "modifierUtilisateur",
+    icon: "ni ni-circle-08 text-pink",
+    component: <Update_User/>,
+    layout: "/admin",
+    hidden: true,
   },
 ];
 export default routes;

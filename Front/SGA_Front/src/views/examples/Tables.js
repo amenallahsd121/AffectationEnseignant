@@ -116,6 +116,15 @@ const Utilisateurs = () => {
                       <td style={{ verticalAlign: "middle" }}>{utilisateur.grade}</td>
                       <td className="text-right">
                         <Button
+                          className="mr-2"
+                          color="info"
+                          size="sm"
+                          style={{ marginLeft: "20px" }}
+                          onClick={() => handleModifierClick(utilisateur.id)}
+                        >
+                          Modifier
+                        </Button>
+                        <Button
                           className="mr-7"
                           color="danger"
                           size="sm"
