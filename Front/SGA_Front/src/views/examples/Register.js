@@ -87,8 +87,12 @@ const Register = () => {
     try {
 
       const response = await register_user_api_view(formData);
-      navigate("/auth/login", { replace: true });
       console.log(response.data);
+      if (response.data.message === "Utilisateur enregistré avec succès.") {
+        navigate("/auth/login");
+      } else {
+        // Handle other cases, e.g., show an error message
+      }
     } catch (error) {
       
       console.error("Erreur lors de l'ajout de l'utilisateur:", error);
@@ -125,7 +129,7 @@ const Register = () => {
               <InputGroup className="input-group-alternative mb-3">
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>
-                    <i className="ni ni-user" />
+                    <i className="ni ni-badge" />
                   </InputGroupText>
                 </InputGroupAddon>
                 <Input
@@ -141,7 +145,7 @@ const Register = () => {
               <InputGroup className="input-group-alternative mb-3">
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>
-                    <i className="ni ni-user" />
+                    <i className="ni ni-badge" />
                   </InputGroupText>
                 </InputGroupAddon>
                 <Input

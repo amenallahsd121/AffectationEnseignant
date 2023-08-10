@@ -32,11 +32,13 @@ import {
 } from "reactstrap";
 import { user_login } from "service/api.js";
 import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Login = () => {
-  //const [isLoggedIn, setLoggedIn] = useState(false);
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  
 
   const handleSignIn = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
@@ -45,16 +47,18 @@ const Login = () => {
     try {
       const response = await user_login({ email, password });
       // Assuming the response contains a 'data' field with a success message
-      if (response.data.message === "Login Successful") {
-        //setLoggedIn(true);
+      console.log(response.data.message);
+      if (response.data.message === "Connexion avec succès!") {
+        navigate("/admin/user-profile", { state: { userInfo: response.data } });
       } else {
-        // Handle other cases, e.g., show an error message
+        console.log("Erreur");
       }
     } catch (error) {
       // Handle API call errors
       console.error(error);
     }
   };
+  
   return (
     <>
       <Col lg="5" md="7">

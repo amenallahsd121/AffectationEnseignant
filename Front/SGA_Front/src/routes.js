@@ -1,13 +1,17 @@
 
 import Index from "views/Index.js";
 import Profile from "views/examples/Profile.js";
-import Maps from "views/examples/Maps.js";
 import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
 import Tables from "views/examples/Tables.js";
-import Update_User from "views/examples/Update_User.js";
+import UpdateUser from "views/examples/UpdateUser.js";
 import Icons from "views/examples/Icons.js";
-import Niveaux from "views/examples/Niveaux";
+import AjouterOption from "views/examples/Options/AjouterOption";
+import Options from "views/examples/Options/Options";
+import ModifierOption from "views/examples/Options/ModifierOption";
+import Competences from "views/examples/Competences/Competences";
+import AjouterCompetence from "views/examples/Competences/AjouterCompetence";
+import ModifierCompetence from "views/examples/Competences/ModifierCompetence";
 
 var routes = [
   {
@@ -25,29 +29,16 @@ var routes = [
     layout: "/admin",
   },
   {
-    path: "/niveaux",
-    name: "Niveaux",
-    icon: "ni ni-planet text-blue",
-    component: <Niveaux />,
-    layout: "/admin",
-  },
-  {
-    path: "/maps",
-    name: "Maps",
-    icon: "ni ni-pin-3 text-orange",
-    component: <Maps />,
-    layout: "/admin",
-  },
-  {
     path: "/user-profile",
     name: "User Profile",
+    key: "getLoggedInUserInfo",
     icon: "ni ni-single-02 text-yellow",
     component: <Profile />,
     layout: "/admin",
   },
   {
     path: "/tables",
-    name: "Tables",
+    name: "Liste Des Utilisateurs",
     key: "list_users",
     icon: "ni ni-bullet-list-67 text-red",
     component: <Tables />,
@@ -55,26 +46,82 @@ var routes = [
   },
   {
     path: "/login",
-    name: "Login",
+    name: "Se connecter",
     icon: "ni ni-key-25 text-info",
     component: <Login />,
     layout: "/auth",
   },
   {
     path: "/register",
-    name: "register",
+    name: "Inscription",
     key: "register_user_api_view",
-    icon: "ni ni-circle-08 text-pink",
+    icon: "ni ni-circle-08 text-green",
     component: <Register />,
     layout: "/auth",
   },
   {
-    path: "/modifierUtilisateur/:id",
-    name: "modifierUtilisateur",
-    icon: "ni ni-circle-08 text-pink",
-    component: <Update_User/>,
+    path: "/modifierutilisateur/:id",
+    name: "Modifier Compte",
+    icon: "ni ni-circle-08 text-info",
+    component: <UpdateUser/>,
     layout: "/admin",
     hidden: true,
   },
+  {
+    path: "/ajouteroption",
+    name: "Ajouter Option",
+    icon: "ni ni-collection text-green",
+    component: <AjouterOption />,
+    layout: "/admin",
+    hidden: true,
+  },
+
+  {
+    path: "/options",
+    name: "Options",
+    icon: "ni ni-collection text-blue",
+    component: <Options />,
+    layout: "/admin",
+  },
+
+  {
+    path: "/modifieroption/:id",
+    name: "Modifier Option",
+    icon: "ni ni-collection text-info",
+    component: <ModifierOption />,
+    layout: "/admin",
+    hidden: true,
+  },
+
+
+  {
+    path: "/ajoutercompetence",
+    name: "Ajouter Compétence",
+    icon: "ni ni-paper-diploma text-green",
+    component: <AjouterCompetence />,
+    layout: "/admin",
+    hidden: true,
+  },
+
+  {
+    path: "/competences",
+    name: "Compétences",
+    icon: "ni ni-paper-diploma text-blue",
+    component: <Competences/>,
+    layout: "/admin",
+    hidden: true,
+  },
+
+
+  {
+    path: "/modifiercompetence/:id",
+    name: "Modifier Compétence",
+    icon: "ni ni-paper-diploma text-info",
+    component: <ModifierCompetence />,
+    layout: "/admin",
+    hidden: true,
+  },
+
+
 ];
 export default routes;

@@ -1,6 +1,11 @@
 import axios from "axios";
+import Competences from "views/examples/Competences/Competences";
 
 const url = "http://127.0.0.1:8000/";
+
+
+//Utilisateur 
+
 
 export const register_user_api_view = async (Utilisateur) => {
   console.log("Sending registration request:", Utilisateur);
@@ -24,6 +29,23 @@ export const user_login = async (Utilisateur) => {
       },
     });
   };
+  
+
+
+  export const getLoggedInUserInfo = async () => {
+    try {
+      const response = await axios.get(url + 'user-info', {
+      });
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error while fetching user info:", error);
+      throw error; // Handle error appropriately
+    }
+  };
+  
+  
+  
 
 export const list_users = async (id) => {
     id = id || "list_users";
@@ -39,11 +61,10 @@ export const list_users = async (id) => {
     }
   };
 
-  export const list_user = async (id) => {
-    id = id || "list_user";
+  export const list_user = async () => {
     console.log("Sending list_user details request...");
     try {
-      const response = await axios.get(`${url}/list_user/${id}`);
+      const response = await axios.get(`${url}/list_user`);
       console.log("List user details response:", response.data);
       console.log("Returned response data:", response);
       return response.data;
@@ -80,3 +101,89 @@ export const list_users = async (id) => {
     return await axios.delete(`${url}/delete_user/${id}`);
   };
   
+
+//Option
+
+export const getOptions = async () => {
+  return await axios.get(`${url}/options`);
+};
+
+
+export const getOption = async (id) => {
+  id = id || "option";
+  console.log("Sending option details request...");
+  try {
+    const response = await axios.get(`${url}/option/${id}`);
+    console.log("List option details response:", response.data);
+    console.log("Returned response data:", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error while fetching option:", error);
+    throw error;
+  }
+};
+
+export const addOption = async (Option) => {
+  console.log(Option);
+  return await axios.post(url + "options/add", Option, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export const updateOption = async (id, Option) => {
+  console.log(`${url}/options/update/${id}`);
+  return await axios.put(`${url}/options/update/${id}`, Option, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export const deleteOption = async (id) => {
+  return await axios.delete(`${url}/options/delete/${id}`);
+};
+
+
+//Competence
+export const getCompetences = async () => {
+  return await axios.get(`${url}/competences`);
+};
+
+
+export const getCompetence = async (id) => {
+  id = id || "competence";
+  console.log("Sending option details request...");
+  try {
+    const response = await axios.get(`${url}/competence/${id}`);
+    console.log("List competence details response:", response.data);
+    console.log("Returned response data:", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error while fetching competence:", error);
+    throw error;
+  }
+};
+
+export const addCompetence = async (Competence) => {
+  console.log(Competence);
+  return await axios.post(url + "competences/add", Competence, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export const updateCompetence = async (id, Competence) => {
+  console.log(`${url}/competences/update/${id}`);
+  return await axios.put(`${url}/competences/update/${id}`, Competence, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export const deleteCompetence = async (id) => {
+  return await axios.delete(`${url}/competences/delete/${id}`);
+};
