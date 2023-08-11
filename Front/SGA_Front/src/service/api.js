@@ -60,10 +60,10 @@ export const list_users = async (id) => {
     }
   };
 
-  export const list_user = async () => {
+  export const list_user = async (id) => {
     console.log("Sending list_user details request...");
     try {
-      const response = await axios.get(`${url}/list_user`);
+      const response = await axios.get(`${url}/list_user/${id}`);
       console.log("List user details response:", response.data);
       console.log("Returned response data:", response);
       return response.data;
@@ -209,22 +209,41 @@ export const getModule = async (id) => {
 };
 
 export const addModule = async (Module) => {
-  console.log(Module);
-  return await axios.post(url + "modules/add", Module, {
+  console.log("Module to be sent:", Module);
+  try {
+    const response = await axios.post(url + "modules/add", Module, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
+    
+    console.log("API Response:", response.data);
+    return response;
+  } catch (error) {
+    console.error("API Error:", error);
+    throw error;
+  }
 };
 
 export const updateModule = async (id, Module) => {
   console.log(`${url}/modules/update/${id}`);
-  return await axios.put(`${url}/modules/update/${id}`, Module, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  console.log("Module to be sent:", Module);
+  
+  try {
+    const response = await axios.put(`${url}/modules/update/${id}`, Module, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    console.log("API Response:", response.data);
+    return response;
+  } catch (error) {
+    console.error("API Error:", error);
+    throw error;
+  }
 };
+
 
 export const deleteModule = async (id) => {
   return await axios.delete(`${url}/modules/delete/${id}`);

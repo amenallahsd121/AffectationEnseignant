@@ -12,11 +12,10 @@ import {
   Col,
 } from "reactstrap";
 import Header from "components/Headers/Header";
-import { addModule , getCompetences} from "service/api"; // Make sure this path is correct
+import { addModule , getCompetences} from "service/api"; 
 import { useNavigate } from "react-router-dom";
 import { list_users } from "service/api";
 
-// ... (import statements)
 
 const AjouterModule = () => {
     const navigate = useNavigate();
@@ -53,33 +52,36 @@ const AjouterModule = () => {
     }, []);
 
     console.log(responsableOptions)
+
+
+    const handleResponsableModuleChange = (e) => {
+      console.log("Selected Responsable:", e.target.value);
+      setResponsableModule(e.target.value);
+    };
+    
    
-  
     const handleAjouterClick = async (e) => {
       e.preventDefault();
-      
-      const moduleData = new FormData();
-      moduleData.append("nom", nom);
-      moduleData.append("description", description);
-      moduleData.append("heures_enseignement", heuresEnseignement);
-      moduleData.append("ects", ects);
-      moduleData.append("fiche_module", ficheModule);
-      moduleData.append("enseignants_a_affecter", enseignantsAAffecter);
-      moduleData.append("responsable_module", responsableModule);
-  
-      // Append the selected competence IDs to moduleData
-      competences.forEach((competenceId) => {
-        moduleData.append("competences", competenceId);
-      });
-  
       try {
+        const moduleData = {
+          nom: nom,
+          description: description,
+          heures_enseignement: heuresEnseignement,
+          competences: competences.join(','), 
+          ects: ects,
+          fiche_module: ficheModule,
+          enseignants_a_affecter: enseignantsAAffecter,
+          responsableModule: responsableModule.toString(),
+        };
+    
         const response = await addModule(moduleData);
         console.log(response.data);
-        navigate("/admin/competences");
+        navigate("/admin/modules");
       } catch (error) {
         console.error("Erreur lors de l'ajout du module:", error);
       }
     };
+    
   
     return (
       <>
@@ -264,7 +266,7 @@ const AjouterModule = () => {
                             className="form-control-alternative"
                             id="responsable"
                             value={responsableModule}
-                            onChange={(e) => setResponsableModule(e.target.value)}
+                            onChange={handleResponsableModuleChange}
                           >
                             <option value="">Sélectionner le responsable</option>
                             {responsableOptions?.map((utilisateur) => (

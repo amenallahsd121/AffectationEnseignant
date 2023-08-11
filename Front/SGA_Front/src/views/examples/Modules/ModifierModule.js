@@ -55,11 +55,13 @@ const ModifierModule = () => {
         const response = await getModule(id);
         console.log("API Response:", response);
         const module = response;
+        console.log(module); 
+        const competencesArray = module.competences_list.map(competence => competence.id);
         setNom(module.nom);
         setDescription(module.description);
         setHeuresEnseignement(module.heures_enseignement);
-        setCompetences(module.competences);
         setEcts(module.ects);
+        setCompetences(competencesArray);
         setFicheModule(module.fiche_module);
         setEnseignantsAAffecter(module.enseignants_a_affecter);
         setResponsableModule(module.responsable_module)
@@ -78,13 +80,13 @@ const ModifierModule = () => {
           nom: nom,
           description: description,
           heures_enseignement: heures_enseignement,
-          competences: competences,
+          competences: competences.join(','), 
           ects: ects,
           fiche_module: fiche_module,
           enseignants_a_affecter: enseignants_a_affecter,
-          responsableModule: responsableModule,
+          responsableModule: responsableModule.toString(), 
         });
-
+  
         console.log(response.data);
         navigate("/admin/modules");
       } catch (error) {
@@ -95,6 +97,7 @@ const ModifierModule = () => {
       // Handle missing data or show validation error
     }
   };
+  
 
   const handleAnnulerClick = () => {
     navigate("/admin/modules");

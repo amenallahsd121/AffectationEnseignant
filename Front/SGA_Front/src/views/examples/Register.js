@@ -17,7 +17,7 @@
 */
 
 // reactstrap components
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import {
   Button,
   Card,
@@ -30,7 +30,6 @@ import {
   InputGroup,
   Col,
   Label,
-  CustomInput,
   CardHeader
 } from "reactstrap";
 import { register_user_api_view } from "service/api";
@@ -38,66 +37,68 @@ import { useNavigate } from "react-router-dom";
 
 const Register = () => {
 
-  const roles = [
-    { id: "1", value: "Enseignant" },
-    { id: "2", value: "Coordinateur unité pédagogique" },
-    { id: "3", value: "Responsable module" },
-    { id: "4", value: "Responsable option" },
-    { id: "5", value: "Coordiateur projet" },
-    { id: "6", value: "Chef département" },
-    { id: "7", value: "Vacataire" },
-  ];
+  const [roles, setRoles] = useState([]);
 
-
-  const [formData, setFormData] = useState({
-    username: "",
-    nom_utilisateur: "",
-    prenom_utilisateur: "",
-    email: "",
-    password: "",
-    photo_de_profil: null,
-    numero_de_telephone: "",
-    grade: [],
-  });
-
-  const handlePhotoChange = (event) => {
-    const selectedFile = event.target.files[0];
-    if (selectedFile) {
-      setFormData({ ...formData, photo_de_profil: selectedFile });
-    } else {
-      // Clear the value for the photo_de_profil field
-      setFormData({ ...formData, photo_de_profil: null });
-    }
-  };
+  useEffect(() => {
+    const rolesData = [
+      { id: "1", value: "Enseignant" },
+      { id: "2", value: "Coordinateur unité pédagogique" },
+      { id: "3", value: "Responsable module" },
+      { id: "4", value: "Responsable option" },
+      { id: "5", value: "Coordiateur projet" },
+      { id: "6", value: "Chef département" },
+      { id: "7", value: "Vacataire" },
+    ];
   
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-  };
+    setRoles(rolesData); // Set the roles state with the rolesData array
+  }, []);
+  
+    const [username, setPseudo] = useState("");
+    const [nom_utilisateur, setNomUtilisateur] = useState("");
+    const [prenom_utilisateur, setPrenomUtilisateur] = useState("");
+    const [grade, setGrade] = useState([]);
+    const [email, setEmail] = useState("");
+    const [photo_de_profil, setPhotoDeProfil] = useState(null);
+    const [ password, setPassword] = useState("");
+    const [numero_de_telephone, setNumeroDeTelephone] = useState("");
 
-  const handleRoleChange = (event) => {
-    setFormData({ ...formData, grade: event.target.value });
-  };
 
   const navigate = useNavigate(); // Initialize the navigate function
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleAjouterClick = async (e) => {
+    e.preventDefault();
+  
+    const userData = new FormData();
+    userData.append("username", username);
+    userData.append("nom_utilisateur", nom_utilisateur);
+    userData.append("prenom_utilisateur", prenom_utilisateur);
+    userData.append("email", email);
+    userData.append("password", password);
+  
+    if (photo_de_profil) {
+      userData.append("photo_de_profil", photo_de_profil);
+    }
+  
+    if (numero_de_telephone) {
+      userData.append("numero_de_telephone", numero_de_telephone);
+    }
+  
+    // Append the selected competence IDs to userData
+    grade.forEach((roleId) => {
+      userData.append("grade", roleId);
+    });
+  
+    console.log(userData);
   
     try {
-
-      const response = await register_user_api_view(formData);
+      const response = await register_user_api_view(userData);
       console.log(response.data);
-      if (response.data.message === "Utilisateur enregistré avec succès.") {
-        navigate("/auth/login");
-      } else {
-        // Handle other cases, e.g., show an error message
-      }
+      navigate("/auth/login");
     } catch (error) {
-      
       console.error("Erreur lors de l'ajout de l'utilisateur:", error);
     }
   };
+  
 
   return (
     <Col lg="6" md="8">
@@ -108,7 +109,7 @@ const Register = () => {
         </div>
       </CardHeader>
         <CardBody className="px-lg-5 py-lg-5">
-          <Form role="form" onSubmit={handleSubmit}>
+          <Form role="form" onSubmit={handleAjouterClick}>
             <FormGroup>
               <InputGroup className="input-group-alternative mb-3">
                 <InputGroupAddon addonType="prepend">
@@ -120,8 +121,8 @@ const Register = () => {
                   placeholder="Pseudo"
                   type="text"
                   name="username"
-                  value={formData.username}
-                  onChange={handleChange}
+                  value={username}
+                  onChange={(e) => setPseudo(e.target.value)}
                 />
               </InputGroup>
             </FormGroup>
@@ -136,8 +137,8 @@ const Register = () => {
                   placeholder="Nom"
                   type="text"
                   name="nom_utilisateur"
-                  value={formData.nom_utilisateur}
-                  onChange={handleChange}
+                  value={nom_utilisateur}
+                  onChange={(e) => setNomUtilisateur(e.target.value)}
                 />
               </InputGroup>
             </FormGroup>
@@ -152,8 +153,8 @@ const Register = () => {
                   placeholder="Prenom"
                   type="text"
                   name="prenom_utilisateur"
-                  value={formData.prenom_utilisateur}
-                  onChange={handleChange}
+                  value={prenom_utilisateur}
+                  onChange={(e) => setPrenomUtilisateur(e.target.value)}
                 />
               </InputGroup>
             </FormGroup>
@@ -169,8 +170,8 @@ const Register = () => {
                   type="email"
                   name="email"
                   autoComplete="new-email"
-                  value={formData.email}
-                  onChange={handleChange}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </InputGroup>
             </FormGroup>
@@ -186,8 +187,8 @@ const Register = () => {
                   type="password"
                   name="password"
                   autoComplete="new-password"
-                  value={formData.password}
-                  onChange={handleChange}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </InputGroup>
             </FormGroup>
@@ -198,7 +199,7 @@ const Register = () => {
                   name="photo_de_profil"
                   id="photo"
                   accept=".jpg,.jpeg,.png"
-                  onChange={handlePhotoChange}
+                  onChange={(e) => setPhotoDeProfil(e.target.files[0])}
               />
             </FormGroup>
             <FormGroup>
@@ -212,28 +213,35 @@ const Register = () => {
                   placeholder="Phone Number"
                   type="text"
                   name="numero_de_telephone"
-                  value={formData.numero_de_telephone}
-                  onChange={handleChange}
+                  value={numero_de_telephone}
+                  onChange={(e) => setNumeroDeTelephone(e.target.value)}
                 />
               </InputGroup>
             </FormGroup>
             <FormGroup>
               <Label for="roles">Grade</Label>
-              <CustomInput
-                type="select"
-                name="grade"
-                id="role-select" 
-                value={formData.grade}
-                onChange={handleRoleChange}
-              >
-                {roles.map(role => (
-                  <option key={role.id} value={role.id}>{role.value}</option>
-                ))}
-              </CustomInput>
+              <Input
+                            type="select"
+                            multiple
+                            className="form-control-alternative"
+                            id="grade"
+                            value={grade}
+                            onChange={(e) =>
+                              setGrade(
+                                Array.from(e.target.selectedOptions, (option) => option.value)
+                              )
+                            }
+                          >
+                            {roles?.map((roles) => (
+                              <option key={roles.id} value={roles.id}>
+                                {roles.value} 
+                              </option>
+                            ))}
+                          </Input>
             </FormGroup>
            
             <div className="text-center">
-              <Button className="mt-4" color="primary" onSubmit={handleSubmit}>
+              <Button className="mt-4" color="primary" onSubmit={handleAjouterClick}>
                 S'inscrire
               </Button>
             </div>
