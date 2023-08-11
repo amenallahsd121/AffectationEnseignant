@@ -3,6 +3,8 @@ from Utilisateur.models import Utilisateur
 from Niveau.models import Niveau
 from Option.models import Option
 from Classe.models import Classe
+from Competence.models import Competence
+from Module.models import Module
 from rest_framework.exceptions import ValidationError
 
 
@@ -19,7 +21,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
     def get_grade(self, user):
         # Serialize the 'grade' field to a list of role names
         grade_list = list(user.grade.values_list('nom', flat=True))
-        return grade_list
+        if len(grade_list) > 1:
+            return ', '.join(grade_list)
+        elif len(grade_list) == 1:
+            return grade_list[0]
+        else:
+            return ''
 """
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -114,8 +121,36 @@ class ClasseSerializer(serializers.ModelSerializer):
         model = Classe
         fields = ['id' , 'niveau' , 'option']
 
+
+# Competence
+class CompetenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Competence
+        fields = '__all__'
  
 
+#Module
+class ModuleSerializer(serializers.ModelSerializer):
+    competences = serializers.SerializerMethodField()
+    responsable_module = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Module
+        fields = '__all__'
+
+    def get_competences(self, module):
+        
+        competence_list = list(module.competences.values_list('nom', flat=True))
+
+        if len(competence_list) > 1:
+            return ', '.join(competence_list)
+        elif len(competence_list) == 1:
+            return competence_list[0]
+        else:
+            return ''
+    
+    def get_responsable_module(self, module):
+        return module.responsable_module.username
 
 
 

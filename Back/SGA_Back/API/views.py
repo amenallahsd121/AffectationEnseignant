@@ -146,6 +146,8 @@ def delete_user(request, id=None):
 
 
 
+
+
 # Option
 
 @api_view(['GET'])
@@ -181,7 +183,9 @@ def updateOption(request, id=None):
 def deleteOption(request, id=None):
     option = Option.objects.get(id=id)
     option.delete()
-    return Response("Option deleted")
+    return Response("Option supprimée avec succès!")
+
+
 
 
 # Niveau
@@ -229,6 +233,9 @@ def deleteNiveau(request, id=None):
 
     niveau.delete()
     return Response("Niveau deleted")
+
+
+
 
 # Classe
 
@@ -288,9 +295,6 @@ def addClasse(request):
 
 
 
-
-
-
 @api_view(['PUT'])
 def updateClasse(request, id=None):
     classe = Classe.objects.get(id=id)
@@ -307,3 +311,84 @@ def deleteClasse(request, id=None):
     classe = Classe.objects.get(id=id)
     classe.delete()
     return Response("Niveau deleted")
+
+
+
+
+
+
+#Competence
+
+@api_view(['GET'])
+def getCompetences(request):
+    competences = Competence.objects.all()
+    serializer = CompetenceSerializer(competences, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def getCompetence(request, id=None):
+    competence = Competence.objects.get(id=id)
+    serializer = CompetenceSerializer(competence)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def addCompetence(request):
+    serializer = CompetenceSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+def updateCompetence(request, id=None):
+    competence = Competence.objects.get(id=id)
+    serializer = CompetenceSerializer(instance=competence, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+def deleteCompetence(request, id=None):
+    competence = Competence.objects.get(id=id)
+    competence.delete()
+    return Response("Competence supprimée avec succès!")
+
+
+
+#Module
+
+@api_view(['GET'])
+def getModules(request):
+    modules = Module.objects.all()
+    serializer = ModuleSerializer(modules, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def getModule(request, id=None):
+    module = Module.objects.get(id=id)
+    serializer = ModuleSerializer(module)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def addModule(request):
+    serializer = ModuleSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+def updateModule(request, id=None):
+    module = Module.objects.get(id=id)
+    serializer = ModuleSerializer(instance=module, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+def deleteModule(request, id=None):
+    module = Module.objects.get(id=id)
+    module.delete()
+    return Response("Module supprimé avec succès!")

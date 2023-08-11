@@ -7,7 +7,7 @@ def module_fiche_upload_path(instance, filename):
     return f"Fiches_Module/{instance.nom}/{filename}"
 
 class Module(models.Model):
-    nom = models.CharField(max_length=255)
+    nom = models.CharField(max_length=255,unique=True)
     description = models.TextField()
     heures_enseignement = models.PositiveIntegerField()
     competences = models.ManyToManyField(Competence)
