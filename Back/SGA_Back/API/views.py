@@ -8,6 +8,8 @@ from rest_framework import permissions, status
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.core.files.base import ContentFile
+
 
 
 #Utilisateur
@@ -374,6 +376,16 @@ def getModule(request, id=None):
 def addModule(request):
     serializer = ModuleSerializer(data=request.data)
     if serializer.is_valid():
+        # Convert comma-separated string of competence IDs to a list of integers
+        competences_list = list(map(int, request.data.get('competences', '').split(',')))
+        serializer.validated_data['competences'] = competences_list
+        
+        # Convert the responsable_module from string to integer if needed
+        responsable_module_id = request.data.get('responsableModule')
+        if responsable_module_id:
+            responsable_module_instance = Utilisateur.objects.get(id=responsable_module_id)
+            serializer.validated_data['responsable_module'] = responsable_module_instance
+        
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -383,9 +395,28 @@ def updateModule(request, id=None):
     module = Module.objects.get(id=id)
     serializer = ModuleSerializer(instance=module, data=request.data)
     if serializer.is_valid():
+        # Convert comma-separated string of competence IDs to a list of integers
+        competences_list = list(map(int, request.data.get('competences', '').split(',')))
+        serializer.validated_data['competences'] = competences_list
+        
+        # Convert the responsable_module from string to integer if needed
+        responsable_module_id = request.data.get('responsableModule')
+        if responsable_module_id:
+            responsable_module_instance = Utilisateur.objects.get(id=responsable_module_id)
+            serializer.validated_data['responsable_module'] = responsable_module_instance
+        
+         # Handle file update for fiche_module
+        new_fiche_module = request.FILES.get('fiche_module')
+        if new_fiche_module:
+            # Check if the new file is different from the existing one
+            if module.fiche_module.read() != new_fiche_module.read():
+                module.fiche_module.save(new_fiche_module.name, new_fiche_module, save=True)
+
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 @api_view(['DELETE'])
 def deleteModule(request, id=None):

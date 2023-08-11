@@ -131,6 +131,10 @@ class CompetenceSerializer(serializers.ModelSerializer):
 
 #Module
 class ModuleSerializer(serializers.ModelSerializer):
+
+    competences_list = CompetenceSerializer(source='competences', many=True, read_only=True)
+    responsable_module_info = CustomUserSerializer(source='responsable_module', read_only=True)
+
     competences = serializers.SerializerMethodField()
     responsable_module = serializers.SerializerMethodField()
 
@@ -140,12 +144,12 @@ class ModuleSerializer(serializers.ModelSerializer):
 
     def get_competences(self, module):
         
-        competence_list = list(module.competences.values_list('nom', flat=True))
+        competences = list(module.competences.values_list('nom', flat=True))
 
-        if len(competence_list) > 1:
-            return ', '.join(competence_list)
-        elif len(competence_list) == 1:
-            return competence_list[0]
+        if len(competences) > 1:
+            return ', '.join(competences)
+        elif len(competences) == 1:
+            return competences[0]
         else:
             return ''
     
