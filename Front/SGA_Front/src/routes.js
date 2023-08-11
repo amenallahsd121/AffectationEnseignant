@@ -12,6 +12,9 @@ import ModifierOption from "views/examples/Options/ModifierOption";
 import Competences from "views/examples/Competences/Competences";
 import AjouterCompetence from "views/examples/Competences/AjouterCompetence";
 import ModifierCompetence from "views/examples/Competences/ModifierCompetence";
+import AjouterModule from "views/examples/Modules/AjouterModule";
+import Modules from "views/examples/Modules/Modules";
+import ModifierModule from "views/examples/Modules/ModifierModule";
 
 var routes = [
   {
@@ -27,7 +30,7 @@ var routes = [
     icon: "ni ni-planet text-blue",
     component: <Icons />,
     layout: "/admin",
-  },
+  }, 
   {
     path: "/user-profile",
     name: "User Profile",
@@ -78,7 +81,7 @@ var routes = [
 
   {
     path: "/options",
-    name: "Options",
+    name: "Liste des options",
     icon: "ni ni-collection text-blue",
     component: <Options />,
     layout: "/admin",
@@ -105,7 +108,7 @@ var routes = [
 
   {
     path: "/competences",
-    name: "Compétences",
+    name: "Liste des compétences",
     icon: "ni ni-paper-diploma text-blue",
     component: <Competences/>,
     layout: "/admin",
@@ -118,6 +121,35 @@ var routes = [
     name: "Modifier Compétence",
     icon: "ni ni-paper-diploma text-info",
     component: <ModifierCompetence />,
+    layout: "/admin",
+    hidden: true,
+  },
+
+
+  {
+    path: "/ajoutermodule",
+    name: "Ajouter Module",
+    icon: "ni ni-ruler-pencil text-green",
+    component: <AjouterModule/>,
+    layout: "/admin",
+    hidden: true,
+  },
+
+  {
+    path: "/modules",
+    name: "Liste des modules",
+    icon: "ni ni-ruler-pencil text-blue",
+    component: <Modules/>,
+    layout: "/admin",
+    hidden: true,
+  },
+
+
+  {
+    path: "/modifiermodule/:id",
+    name: "Modifier Module",
+    icon: "ni ni-ruler-pencil text-info",
+    component: <ModifierModule />,
     layout: "/admin",
     hidden: true,
   },

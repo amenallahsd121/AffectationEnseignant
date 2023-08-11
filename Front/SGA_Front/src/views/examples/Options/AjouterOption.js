@@ -111,7 +111,7 @@ const AjouterOption = () => {
                           Ajouter
                         </Button>
                         <Button
-                        color="primary"
+                        color="secondary"
                         onClick={handleAnnulerClick}
                         size="mg"
                       >

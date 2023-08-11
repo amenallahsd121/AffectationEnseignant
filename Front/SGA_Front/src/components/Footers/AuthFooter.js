@@ -34,7 +34,8 @@ const Login = () => {
                   href="https://www.creative-tim.com?ref=adr-auth-footer"
                   target="_blank"
                 >
-                  Creative Tim
+                  EQUIPE DEV ESPRIT
+
                 </a>
               </div>
             </Col>
@@ -45,7 +46,7 @@ const Login = () => {
                     href="https://www.creative-tim.com?ref=adr-auth-footer"
                     target="_blank"
                   >
-                    Creative Tim
+                    ESPRIT
                   </NavLink>
                 </NavItem>
                 <NavItem>
@@ -54,22 +55,6 @@ const Login = () => {
                     target="_blank"
                   >
                     About Us
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink
-                    href="http://blog.creative-tim.com?ref=adr-auth-footer"
-                    target="_blank"
-                  >
-                    Blog
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink
-                    href="https://github.com/creativetimofficial/argon-dashboard/blob/master/LICENSE.md?ref=adr-auth-footer"
-                    target="_blank"
-                  >
-                    MIT License
                   </NavLink>
                 </NavItem>
               </Nav>

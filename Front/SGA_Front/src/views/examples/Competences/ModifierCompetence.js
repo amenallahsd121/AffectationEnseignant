@@ -125,7 +125,7 @@ const ModifierCompetence = () => {
                           Modifier
                         </Button>
                         <Button
-                        color="primary"
+                        color="secondary"
                         onClick={handleAnnulerClick}
                         size="mg"
                       >

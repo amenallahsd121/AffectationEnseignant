@@ -1,5 +1,4 @@
 import axios from "axios";
-import Competences from "views/examples/Competences/Competences";
 
 const url = "http://127.0.0.1:8000/";
 
@@ -187,3 +186,47 @@ export const updateCompetence = async (id, Competence) => {
 export const deleteCompetence = async (id) => {
   return await axios.delete(`${url}/competences/delete/${id}`);
 };
+
+
+//Module 
+export const getModules = async () => {
+  return await axios.get(`${url}/modules`);
+};
+
+
+export const getModule = async (id) => {
+  id = id || "module";
+  console.log("Sending module details request...");
+  try {
+    const response = await axios.get(`${url}/module/${id}`);
+    console.log("List module details response:", response.data);
+    console.log("Returned response data:", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error while fetching module:", error);
+    throw error;
+  }
+};
+
+export const addModule = async (Module) => {
+  console.log(Module);
+  return await axios.post(url + "modules/add", Module, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export const updateModule = async (id, Module) => {
+  console.log(`${url}/modules/update/${id}`);
+  return await axios.put(`${url}/modules/update/${id}`, Module, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export const deleteModule = async (id) => {
+  return await axios.delete(`${url}/modules/delete/${id}`);
+};
+
