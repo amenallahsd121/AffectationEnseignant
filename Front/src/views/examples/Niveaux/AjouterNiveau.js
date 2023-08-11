@@ -46,8 +46,8 @@ const AjouterNiveau = () => {
     <>
       <Header />
       <div className="bg-secondary" style={{ minHeight: "100vh" }}>
-        <Container className="mt--7" fluid>
-          <Row className="justify-content-center">
+        <Container className="mt--7" fluid  >
+          <Row style={{ marginTop: '150px' }} className="justify-content-center" >
             <Col lg="10">
               <Card className="shadow p-4">
                 <CardHeader className="bg-white border-0">
@@ -96,6 +96,7 @@ const AjouterNiveau = () => {
                             id="nombredeclasse"
                             placeholder=""
                             type="number"
+                            min={1}
                             value={nombreDeClasse}
                             onChange={(e) => setNombreDeClasse(e.target.value)}
                           />

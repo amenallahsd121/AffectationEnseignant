@@ -62,7 +62,7 @@ const ModifierNiveau = () => {
       <Header />
       <div className="bg-secondary" style={{ minHeight: "100vh" }}>
         <Container className="mt--7" fluid>
-          <Row className="justify-content-center">
+        <Row style={{ marginTop: '150px' }} className="justify-content-center" >
             <Col lg="8">
               <Card className="shadow p-4">
                 <CardHeader className="bg-white border-0">

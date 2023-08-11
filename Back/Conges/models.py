@@ -8,8 +8,8 @@ class Conges(models.Model):
     type=models.CharField(max_length=20,null=True)
     datedebut=models.DateField(null=True)
     datefin=models.DateField(null=True)
-    # Utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, null=False, blank=False,default=1)
-    user = models.ManyToManyField(Utilisateur)
+    user = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, null=True, blank=False)
+    
 
 
     

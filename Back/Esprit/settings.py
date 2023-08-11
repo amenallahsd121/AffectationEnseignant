@@ -44,6 +44,11 @@ INSTALLED_APPS = [
     'Role',
     'Utilisateur',
     'Conges',
+    'Option',
+    'Competence',
+    'Module',
+    'Affectation',
+    
 ]
 
 

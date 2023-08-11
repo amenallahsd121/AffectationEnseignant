@@ -1,7 +1,6 @@
 
 import Index from "views/Index.js";
-import Profile from "views/examples/Profile.js";
-import Maps from "views/examples/Maps.js";
+import Profile from "views/examples/Profile.js";  
 import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
 import Tables from "views/examples/Tables.js";
@@ -10,6 +9,12 @@ import Niveaux from "views/examples/Niveaux/Niveaux";
 import AjouterNiveau from "views/examples/Niveaux/AjouterNiveau";
 import ModifierNiveau from "views/examples/Niveaux/ModifierNiveau";
 import Classes from "views/examples/Classes/Classes";
+import AjouterClasse from "views/examples/Classes/AjouterClasse";
+import ModifierClasse from "views/examples/Classes/ModifierClasse";
+import Conges from "views/examples/Conges/Conges";
+import AjouterConges from "views/examples/Conges/AjouterConges";
+import ModifierConges from "views/examples/Conges/ModifierConges";
+
 
 var routes = [
   {
@@ -44,7 +49,7 @@ var routes = [
     path: "/conges",
     name: "Conges",
     icon: "ni ni-archive-2 text-blue",
-    component: <Maps />,
+    component: <Conges />,
     layout: "/admin",
   },
   {
@@ -88,6 +93,38 @@ var routes = [
     name: "modifierniveau",
     icon: "ni ni-circle-08 text-pink",
     component: <ModifierNiveau />,
+    layout: "/admin",
+    hidden: true,
+  },
+  {
+    path: "/ajouterclasse",
+    name: "ajouterclasse",
+    icon: "ni ni-circle-08 text-pink",
+    component: <AjouterClasse />,
+    layout: "/admin",
+    hidden: true,
+  },
+  {
+    path: "/modifierclasse/:id",
+    name: "modifierclasse",
+    icon: "ni ni-circle-08 text-pink",
+    component: <ModifierClasse />,
+    layout: "/admin",
+    hidden: true,
+  },
+  {
+    path: "/ajouterconges",
+    name: "ajouterconges",
+    icon: "ni ni-archive-2 text-blue",
+    component: <AjouterConges />,
+    layout: "/admin",
+    hidden: true,
+  },
+  {
+    path: "/modifierconges",
+    name: "modifierconges",
+    icon: "ni ni-archive-2 text-blue",
+    component: <ModifierConges />,
     layout: "/admin",
     hidden: true,
   },

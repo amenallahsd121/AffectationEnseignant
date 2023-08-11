@@ -23,12 +23,15 @@ const Niveaux = () => {
     navigate(`/admin/modifierniveau/${niveauId}`);
   };
 
-  const handleSupprimerClick = async (niveauId) => {
-    try {
-      await deleteNiveau(niveauId);
-      fetchData();
-    } catch (error) {
-      console.error("Error deleting niveau:", error);
+ const handleSupprimerClick = async (niveauId) => {
+    const confirmDelete = window.confirm("Voulez-vous vraiment supprimer ce niveau ?");
+    if (confirmDelete) {
+      try {
+        await deleteNiveau(niveauId);
+        fetchData();
+      } catch (error) {
+        console.error("Error deleting niveau:", error);
+      }
     }
   };
 
@@ -51,7 +54,7 @@ const Niveaux = () => {
     <>
       <Header />
       <Container className="mt--7" fluid>
-        <Row>
+      <Row style={{ marginTop: '150px' }} className="justify-content-center" >
           <div className="col">
             <Card className="shadow">
               <CardHeader className="border-0 d-flex justify-content-between">

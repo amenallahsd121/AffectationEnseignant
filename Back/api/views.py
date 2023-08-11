@@ -3,8 +3,10 @@ from rest_framework import status
 from rest_framework.decorators import api_view, parser_classes
 from Niveau.models import Niveau
 from Classe.models import Classe
+from Conges.models import Conges
 from .serializer import NiveauSerializer
 from .serializer import ClasseSerializer
+from .serializer import CongesSerializer
 
 
 # ///////////////////////////////////////////////////// Niveaux ///////////////////////////////////////////////////////////////////////////////
@@ -94,4 +96,48 @@ def updateClasse(request, id=None):
 def deleteClasse(request, id=None):
     classe = Classe.objects.get(id=id)
     classe.delete()
-    return Response("Niveau deleted")
+    return Response("Classe deleted")
+
+# ///////////////////////////////////////////////////// Conges ///////////////////////////////////////////////////////////////////////////////
+
+@api_view(['GET'])
+def getCongess(request):
+    conges = Conges.objects.all()
+    serializer = CongesSerializer(conges, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def getConges(request,id=None):
+    conges = Conges.objects.get(id=id)
+    serializer = CongesSerializer(conges)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+@api_view(['POST'])
+def addConges(request):
+    serializer = CongesSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['PUT'])
+def updateConges(request, id=None):
+    conges = Conges.objects.get(id=id)
+    serializer = CongesSerializer(instance=conges, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['DELETE'])
+def deleteConges(request, id=None):
+    conges = Conges.objects.get(id=id)
+    conges.delete()
+    return Response("Conges deleted")
+

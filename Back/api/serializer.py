@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from Niveau.models import Niveau
 from Classe.models import Classe
+from Conges.models import Conges
+
 
 
 class NiveauSerializer(serializers.ModelSerializer):
@@ -14,4 +16,11 @@ class ClasseSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Classe
-        fields = ['id', 'nom', 'niveau_nom']  
+        fields = '__all__'
+
+class CongesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Conges
+        fields = '__all__'
+
