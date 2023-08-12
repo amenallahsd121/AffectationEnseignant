@@ -16,7 +16,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Utilisateur
-        fields = ('id', 'username', 'nom_utilisateur', 'prenom_utilisateur', 'email', 'password','grade')
+        fields = ('id', 'username', 'nom_utilisateur', 'prenom_utilisateur', 'email', 'password','photo_de_profil','numero_de_telephone','grade')
 
     def get_grade(self, user):
         # Serialize the 'grade' field to a list of role names
