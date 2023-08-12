@@ -122,6 +122,7 @@ const Register = () => {
                   type="text"
                   name="username"
                   value={username}
+                  autoComplete="off"
                   onChange={(e) => setPseudo(e.target.value)}
                 />
               </InputGroup>
@@ -138,6 +139,7 @@ const Register = () => {
                   type="text"
                   name="nom_utilisateur"
                   value={nom_utilisateur}
+                  autoComplete="off"
                   onChange={(e) => setNomUtilisateur(e.target.value)}
                 />
               </InputGroup>
@@ -154,6 +156,7 @@ const Register = () => {
                   type="text"
                   name="prenom_utilisateur"
                   value={prenom_utilisateur}
+                  autoComplete="off"
                   onChange={(e) => setPrenomUtilisateur(e.target.value)}
                 />
               </InputGroup>
@@ -210,9 +213,10 @@ const Register = () => {
                   </InputGroupText>
                 </InputGroupAddon>
                 <Input
-                  placeholder="Phone Number"
+                  placeholder="Numéro de téléphone"
                   type="text"
                   name="numero_de_telephone"
+                  autoComplete="off"
                   value={numero_de_telephone}
                   onChange={(e) => setNumeroDeTelephone(e.target.value)}
                 />

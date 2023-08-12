@@ -94,6 +94,7 @@ const ModifierCompetence = () => {
                             placeholder="Nom compétence"
                             type="text"
                             value={nom}
+                            autoComplete="off"
                             onChange={(e) => setNomCompetence(e.target.value)}
                           />
                         </FormGroup>
@@ -113,6 +114,7 @@ const ModifierCompetence = () => {
                             id="description"
                             placeholder="Texte descriptif de la compétence"
                             value={description}
+                            autoComplete="off"
                             onChange={(e) => setDescription(e.target.value)}
                             rows={4} // Specify the number of rows for the textarea
                           />

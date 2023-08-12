@@ -77,6 +77,7 @@ const AjouterOption = () => {
                             placeholder="Nom option"
                             type="text"
                             value={nom}
+                            autoComplete="off"
                             onChange={(e) => setNomOption(e.target.value)}
                           />
                         </FormGroup>
@@ -96,6 +97,7 @@ const AjouterOption = () => {
                             id="nb_classes"
                             placeholder="1 - &"
                             type="number"
+                            autoComplete="off"
                             value={nb_classes}
                             onChange={(e) => setNombreDeClasse(e.target.value)}
                           />

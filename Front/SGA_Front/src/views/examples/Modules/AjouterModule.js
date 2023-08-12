@@ -118,6 +118,7 @@ const AjouterModule = () => {
                               placeholder="Nom module"
                               type="text"
                               value={nom}
+                              autoComplete="off"
                               onChange={(e) => setNom(e.target.value)}
                             />
                           </FormGroup>
@@ -137,6 +138,7 @@ const AjouterModule = () => {
                               id="description"
                               placeholder="Texte descriptif du module"
                               value={description}
+                              autoComplete="off"
                               onChange={(e) => setDescription(e.target.value)}
                               rows={4}
                             />
@@ -158,6 +160,7 @@ const AjouterModule = () => {
                               placeholder="Heures d'enseignement"
                               type="number"
                               value={heuresEnseignement}
+                              autoComplete="off"
                               onChange={(e) => setHeuresEnseignement(e.target.value)}
                             />
                           </FormGroup>
@@ -207,6 +210,7 @@ const AjouterModule = () => {
                               id="ects"
                               placeholder="ECTS"
                               type="number"
+                              autoComplete="off"
                               value={ects}
                               onChange={(e) => setEcts(e.target.value)}
                             />
@@ -246,6 +250,7 @@ const AjouterModule = () => {
                               id="enseignants"
                               placeholder="Enseignants à affecter"
                               type="number"
+                              autoComplete="off"
                               value={enseignantsAAffecter}
                               onChange={(e) => setEnseignantsAAffecter(e.target.value)}
                             />

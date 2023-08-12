@@ -10,83 +10,103 @@ import {
   Container,
   Row,
   Col,
-  CustomInput,
+  InputGroup,
+  Label,
+  InputGroupText,
+  InputGroupAddon
 } from "reactstrap";
 import Header from "components/Headers/Header";
-import { list_user } from "service/api";
+import { update_user, list_user } from "service/api";
 import { useNavigate, useParams } from "react-router-dom";
-import { update_user } from "service/api";
 
-const ModifierUtilisateur = () => {
-
-    const roles = [
-        { id: "1", value: "Enseignant" },
-        { id: "2", value: "Coordinateur unité pédagogique" },
-        { id: "3", value: "Responsable module" },
-        { id: "4", value: "Responsable option" },
-        { id: "5", value: "Coordiateur projet" },
-        { id: "6", value: "Chef département" },
-        { id: "7", value: "Vacataire" },
-      ];
-
-  const navigate = useNavigate();
+const UpdateUser = () => {
   const { id } = useParams();
-  const [username, setUsername] = useState("");
-  const [nom_utilisateur, setNomUtilisateur] = useState("");
-  const [prenom_utilisateur, setPrenomUtilisateur] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [photo_de_profil, setPhotoDeProfil] = useState("");
-  const [numero_de_telephone, setNumeroDeTelephone] = useState("");
-  const [grade, setGrade] = useState([]);
 
 
+  const [roles, setRoles] = useState([]);
 
   useEffect(() => {
-    const fetchUtilisateurDetails = async () => {
-      try {
-        const response = await list_user(id);
-        console.log("API Response:", response);
-        const utilisateur = response;
-        setUsername(utilisateur.username);
-        setNomUtilisateur(utilisateur.nom_utilisateur);
-        setPrenomUtilisateur(utilisateur.prenom_utilisateur);
-        setEmail(utilisateur.email);
-        setPassword(utilisateur.password);
-        setPhotoDeProfil(utilisateur.photo_de_profil);
-        setNumeroDeTelephone(utilisateur.numero_de_telephone);
-        setGrade(utilisateur.grade);
-      } catch (error) {
-        console.error("Error fetching utilisateur details:", error);
-      }
-    };
+    const rolesData = [
+      { id: "1", value: "Enseignant" },
+      { id: "2", value: "Coordinateur unité pédagogique" },
+      { id: "3", value: "Responsable module" },
+      { id: "4", value: "Responsable option" },
+      { id: "5", value: "Coordiateur projet" },
+      { id: "6", value: "Chef département" },
+      { id: "7", value: "Vacataire" },
+    ];
+  
+    setRoles(rolesData); // Set the roles state with the rolesData array
+  }, []);
+  
+    const [username, setPseudo] = useState("");
+    const [nom_utilisateur, setNomUtilisateur] = useState("");
+    const [prenom_utilisateur, setPrenomUtilisateur] = useState("");
+    const [grade, setGrade] = useState([]);
+    const [email, setEmail] = useState("");
+    const [photo_de_profil, setPhotoDeProfil] = useState(null);
+    const [ password, setPassword] = useState("");
+    const [numero_de_telephone, setNumeroDeTelephone] = useState("");
 
-    fetchUtilisateurDetails();
-  }, [id]);
+    useEffect(() => {
+      const fetchUtilisateurDetails = async () => {
+        try {
+          const response = await list_user(id);
+          console.log("API Response:", response);
+          const utilisateur = response;
+          setPseudo(utilisateur.username);
+          setNomUtilisateur(utilisateur.nom_utilisateur);
+          setPrenomUtilisateur(utilisateur.prenom_utilisateur);
+          setEmail(utilisateur.email);
+          setPassword(utilisateur.password);
+          setPhotoDeProfil(utilisateur.photo_de_profil);
+          setNumeroDeTelephone(utilisateur.numero_de_telephone);
+          setGrade(utilisateur.grade);
+        } catch (error) {
+          console.error("Error fetching utilisateur details:", error);
+        }
+      };
+  
+      fetchUtilisateurDetails();
+    }, [id]);
 
-  const handleModifierClick = async () => {
-    if (username&&nom_utilisateur&& prenom_utilisateur&&email&&password&&grade) {
-      try {
-        const response = await update_user(id, {
-          username: username,
-          nom_utilisateur: nom_utilisateur,
-          prenom_utilisateur: prenom_utilisateur,
-          email: email,
-          password: password,
-          photo_de_profil: null,
-          numero_de_telephone: '',
-          grade: grade,          
-        });
-        console.log(response.data);
-        navigate("/admin/tables");
-      } catch (error) {
-        console.error("Erreur lors de la modification du utilisateur:", error);
-        // Handle error, display an error message, or perform other actions
-      }
-    } else {
-      // Handle missing data or show validation error
+  const navigate = useNavigate(); // Initialize the navigate function
+
+  const handleModifierClick = async (e) => {
+    e.preventDefault();
+  
+    const userData = new FormData();
+    userData.append("username", username);
+    userData.append("nom_utilisateur", nom_utilisateur);
+    userData.append("prenom_utilisateur", prenom_utilisateur);
+    userData.append("email", email);
+    userData.append("password", password);
+  
+    if (photo_de_profil) {
+      userData.append("photo_de_profil", photo_de_profil);
+    }
+  
+    if (numero_de_telephone) {
+      userData.append("numero_de_telephone", numero_de_telephone);
+    }
+  
+    // Append the selected competence IDs to userData
+    grade.forEach((roleId) => {
+      userData.append("grade", roleId);
+    });
+  
+    console.log(userData);
+  
+    try {
+      const response = await update_user(id,userData);
+      console.log(response.data);
+      navigate("/admin/tables");
+    } catch (error) {
+      console.error("Erreur lors de la modication de l'utilisateur:", error);
     }
   };
+  
+
 
   const handleAnnulerClick = () => {
     navigate("/admin/tables");
@@ -112,152 +132,147 @@ const ModifierUtilisateur = () => {
                     <h6 className="heading-small text-muted mb-4">
                       Informations de l'utilisateur
                     </h6>
-                    <Row>
-                      <Col xs="12">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-username"
-                          >
-                            Pseudo
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="username"
-                            placeholder="Pseudo"
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col xs="12">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-country"
-                          >
-                           Nom
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="nom_utilisateur"
-                            placeholder="Nom"
-                            type="text"
-                            value={nom_utilisateur}
-                            onChange={(e) => setNomUtilisateur(e.target.value)}
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col xs="12">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-country"
-                          >
-                           Prenom
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="prenom_utilisateur"
-                            placeholder="Prenom"
-                            type="text"
-                            value={prenom_utilisateur}
-                            onChange={(e) => setPrenomUtilisateur(e.target.value)}
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col xs="12">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-country"
-                          >
-                           Email
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="email"
-                            placeholder="Email"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                     <Row>
-                      <Col xs="12">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-country"
-                          >
-                           Mot De Passe
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="password"
-                            placeholder="Mot De Passe"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col xs="12">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-country"
-                          >
-                           Photo De Profil
-                          </label>
-                          <Input
-                              type="file"
-                              name="photo_de_profil"
-                              id="photo"
-                              accept=".jpg,.jpeg,.png"
-                              onChange={(e) => setPhotoDeProfil(e.target.value)}
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                     <Row>
-                      <Col xs="12">
-                      <FormGroup>
-                            <label className="form-control-label" htmlFor="input-country">
-                              Grade
-                            </label>
-                            <CustomInput
-                              type="select"
-                              name="grade"
-                              id="role-select" 
-                              value={grade}
-                              onChange={(e) => setGrade(e.target.value)}
-                            >
-                              {roles.map(role => (
-                                <option key={role.id} value={role.id}>{role.value}</option>
-                              ))}
-                            </CustomInput>
-                        </FormGroup>
-                      </Col>
-                    </Row>
+                    <FormGroup>
+              <InputGroup className="input-group-alternative mb-3">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-hat-3" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder="Pseudo"
+                  type="text"
+                  name="username"
+                  value={username}
+                  autoComplete="off"
+                  onChange={(e) => setPseudo(e.target.value)}
+                />
+              </InputGroup>
+            </FormGroup>
+            <FormGroup>
+              <InputGroup className="input-group-alternative mb-3">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-badge" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder="Nom"
+                  type="text"
+                  name="nom_utilisateur"
+                  autoComplete="off"
+                  value={nom_utilisateur}
+                  onChange={(e) => setNomUtilisateur(e.target.value)}
+                />
+              </InputGroup>
+            </FormGroup>
+            <FormGroup>
+              <InputGroup className="input-group-alternative mb-3">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-badge" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder="Prenom"
+                  type="text"
+                  name="prenom_utilisateur"
+                  autoComplete="off"
+                  value={prenom_utilisateur}
+                  onChange={(e) => setPrenomUtilisateur(e.target.value)}
+                />
+              </InputGroup>
+            </FormGroup>
+            <FormGroup>
+              <InputGroup className="input-group-alternative mb-3">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-email-83" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder="Email"
+                  type="email"
+                  name="email"
+                  autoComplete="new-email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </InputGroup>
+            </FormGroup>
+            <FormGroup>
+              <InputGroup className="input-group-alternative">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-lock-circle-open" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder="Mot De Passe"
+                  type="password"
+                  name="password"
+                  autoComplete="new-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </InputGroup>
+            </FormGroup>
+            <FormGroup>
+              <Label for="photo">Photo De Profil</Label>
+              <Input
+                  type="file"
+                  name="photo_de_profil"
+                  id="photo"
+                  accept=".jpg,.jpeg,.png"
+                  onChange={(e) => setPhotoDeProfil(e.target.files[0])}
+              />
+            </FormGroup>
+            <FormGroup>
+              <InputGroup className="input-group-alternative">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-mobile-button" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder="Numéro de téléphone"
+                  type="text"
+                  name="numero_de_telephone"
+                  autoComplete="off"
+                  onChange={(e) => setNumeroDeTelephone(e.target.value)}
+                />
+              </InputGroup>
+            </FormGroup>
+            <FormGroup>
+                <Label for="roles">Grade</Label>
+                <Input
+                  type="select"
+                  multiple
+                  className="form-control-alternative"
+                  id="grade"
+                  value={grade}
+                  onChange={(e) =>
+                    setGrade(
+                      Array.from(e.target.selectedOptions, (option) => option.value)
+                    )
+                  }
+                >
+                  {roles?.map((role) => (
+                    <option key={role.id} value={role.id}>
+                      {role.value} 
+                    </option>
+                  ))}
+                </Input>
+              </FormGroup>
+
+           
                     <Row className="justify-content-center">
                       <Col xs="12" className="text-center">
                         <Button color="primary" onClick={handleModifierClick}>
                           Modifier
                         </Button>
                         <Button
-                        color="primary"
+                        color="secondary"
                         onClick={handleAnnulerClick}
                         size="mg"
                       >
@@ -276,4 +291,4 @@ const ModifierUtilisateur = () => {
   );
 };
 
-export default ModifierUtilisateur;
+export default UpdateUser;

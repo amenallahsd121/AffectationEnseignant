@@ -49,7 +49,8 @@ const Login = () => {
       // Assuming the response contains a 'data' field with a success message
       console.log(response.data.message);
       if (response.data.message === "Connexion avec succès!") {
-        navigate("/admin/user-profile", { state: { userInfo: response.data } });
+        //navigate("/admin/user-profile", { state: { userInfo: response.data } });
+        navigate("/admin/index");
       } else {
         console.log("Erreur");
       }

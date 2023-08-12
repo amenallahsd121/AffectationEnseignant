@@ -93,6 +93,7 @@ const ModifierOption = () => {
                             id="nom"
                             placeholder="Nom option"
                             type="text"
+                            autoComplete="off"
                             value={nom}
                             onChange={(e) => setNomOption(e.target.value)}
                           />
@@ -112,6 +113,7 @@ const ModifierOption = () => {
                             className="form-control-alternative"
                             id="nb_classes"
                             placeholder="1-&"
+                            autoComplete="off"
                             type="number"
                             value={nb_classes}
                             onChange={(e) => setNombreDeClasse(e.target.value)}
