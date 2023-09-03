@@ -10,10 +10,12 @@ import {
   Container,
   Row,
   Col,
+  FormFeedback
 } from "reactstrap";
 import Header from "components/Headers/Header";
 import { updateOption, getOption } from "service/api";
 import { useNavigate, useParams } from "react-router-dom";
+import { isValidNomOption , isValidNombreDeClasse } from "validation";
 
 const ModifierOption = () => {
   const navigate = useNavigate();
@@ -96,7 +98,11 @@ const ModifierOption = () => {
                             autoComplete="off"
                             value={nom}
                             onChange={(e) => setNomOption(e.target.value)}
-                          />
+                            invalid={!isValidNomOption(nom) || nom === ""} 
+                            />
+                             {(!isValidNomOption(nom) || nom === "") && (
+                             <FormFeedback>Le nom ne peut pas être vide et doit commencer par une majuscule et contenir uniquement des lettres et des espaces.</FormFeedback>
+                           )}
                         </FormGroup>
                       </Col>
                     </Row>
@@ -117,7 +123,11 @@ const ModifierOption = () => {
                             type="number"
                             value={nb_classes}
                             onChange={(e) => setNombreDeClasse(e.target.value)}
-                          />
+                            invalid={!isValidNombreDeClasse(nb_classes) || nb_classes === ""} 
+                            />
+                             {(!isValidNombreDeClasse(nb_classes) || nb_classes === "") && (
+                             <FormFeedback>Le nombre de classe doit être compris entre 1 et +&.</FormFeedback>
+                           )}
                         </FormGroup>
                       </Col>
                     </Row>

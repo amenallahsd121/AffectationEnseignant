@@ -10,10 +10,12 @@ import {
   Container,
   Row,
   Col,
+  FormFeedback
 } from "reactstrap";
 import Header from "components/Headers/Header";
 import { updateCompetence, getCompetence } from "service/api";
 import { useNavigate, useParams } from "react-router-dom";
+import { isValidNomCompetence , isValidDescriptionCompetence } from "validation";
 
 const ModifierCompetence = () => {
   const navigate = useNavigate();
@@ -56,7 +58,7 @@ const ModifierCompetence = () => {
   };
 
   const handleAnnulerClick = () => {
-    navigate("/admin/compétences");
+    navigate("/admin/competences");
   };
 
   return (
@@ -96,7 +98,11 @@ const ModifierCompetence = () => {
                             value={nom}
                             autoComplete="off"
                             onChange={(e) => setNomCompetence(e.target.value)}
-                          />
+                            invalid={!isValidNomCompetence(nom) || nom === ""} 
+                            />
+                             {(!isValidNomCompetence(nom) || nom === "") && (
+                             <FormFeedback>Le nom ne peut pas être vide et doit commencer par une majuscule et contenir uniquement des lettres, des caractères spéciaux et des espaces.</FormFeedback>
+                           )}
                         </FormGroup>
                       </Col>
                     </Row>
@@ -117,7 +123,11 @@ const ModifierCompetence = () => {
                             autoComplete="off"
                             onChange={(e) => setDescription(e.target.value)}
                             rows={4} // Specify the number of rows for the textarea
-                          />
+                            invalid={!isValidDescriptionCompetence(description) || description === ""} 
+                            />
+                              {(!isValidDescriptionCompetence(description) || description === "") && (
+                                 <FormFeedback>La description ne peut pas être vide et doit commencer par une majuscule et contenir uniquement des lettres, des caractères spéciaux et des espaces.</FormFeedback>
+                              )}
                         </FormGroup>
                       </Col>
                     </Row>

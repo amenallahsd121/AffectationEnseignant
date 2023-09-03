@@ -10,10 +10,12 @@ import {
   Container,
   Row,
   Col,
+  FormFeedback
 } from "reactstrap";
 import Header from "components/Headers/Header";
 import { addCompetence } from "service/api";
 import { useNavigate } from "react-router-dom";
+import { isValidNomCompetence , isValidDescriptionCompetence } from "validation";
 
 const AjouterCompetence = () => {
   const navigate = useNavigate();
@@ -79,7 +81,11 @@ const AjouterCompetence = () => {
                             value={nom}
                             autoComplete="off"
                             onChange={(e) => setNomCompetence(e.target.value)}
-                          />
+                            invalid={!isValidNomCompetence(nom) || nom === ""} 
+                            />
+                             {(!isValidNomCompetence(nom) || nom === "") && (
+                             <FormFeedback>Le nom ne peut pas être vide et doit commencer par une majuscule et contenir uniquement des lettres, des caractères spéciaux et des espaces.</FormFeedback>
+                           )}
                         </FormGroup>
                       </Col>
                     </Row>
@@ -100,7 +106,11 @@ const AjouterCompetence = () => {
                             autoComplete="off"
                             onChange={(e) => setDescription(e.target.value)}
                             rows={4} // Specify the number of rows for the textarea
+                            invalid={!isValidDescriptionCompetence(description) || description === ""} 
                         />
+                          {(!isValidDescriptionCompetence(description) || description === "") && (
+                             <FormFeedback>La description ne peut pas être vide et doit commencer par une majuscule et contenir uniquement des lettres, des caractères spéciaux et des espaces.</FormFeedback>
+                          )}
                         </FormGroup>
                       </Col>
                     </Row>

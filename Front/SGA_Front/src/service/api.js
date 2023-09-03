@@ -22,35 +22,39 @@ export const register_user_api_view = async (Utilisateur) => {
 
 export const user_login = async (Utilisateur) => {
   console.log("Sending login request:", Utilisateur);
-    return await axios.post(url + "login", Utilisateur, {
+  try {
+    const response = await axios.post(url+ "login", Utilisateur, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
-  };
-  
+    console.log("Login response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error while logging in:", error);
+    throw error;
+  }
+};
+
+export const getLoggedInUserInfo = async () => {
+  console.log("Sending user_info request...");
+  try {
+    const response = await axios.get(`${url}user-info`, {
+    });
+    console.log("User info response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error while fetching user info:", error);
+    throw error;
+  }
+};
 
 
-  export const getLoggedInUserInfo = async () => {
-    try {
-      const response = await axios.get(url + 'user-info', {
-      });
-      console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.error("Error while fetching user info:", error);
-      throw error; // Handle error appropriately
-    }
-  };
-  
-  
-  
-
-export const list_users = async (id) => {
-    id = id || "list_users";
+export const list_users = async () => {
+   
     console.log("Sending list_users request...");
     try {
-      const response = await axios.get(`${url}/${id}`);
+      const response = await axios.get(url+"list_users");
       console.log("List users response:", response.data);
       console.log("Returned response data:", response);
       return response.data;
@@ -63,7 +67,7 @@ export const list_users = async (id) => {
   export const list_user = async (id) => {
     console.log("Sending list_user details request...");
     try {
-      const response = await axios.get(`${url}/list_user/${id}`);
+      const response = await axios.get(url+"list_user/"+id);
       console.log("List user details response:", response.data);
       console.log("Returned response data:", response);
       return response.data;
@@ -80,7 +84,7 @@ export const list_users = async (id) => {
     
     try {
       console.log("Sending update_user request...");
-      const response = await axios.put(`${url}/update_user/${id}`, Utilisateur, {
+      const response = await axios.put(url+"update_user/"+id, Utilisateur, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -97,22 +101,21 @@ export const list_users = async (id) => {
 
 
   export const delete_user = async (id) => {
-    return await axios.delete(`${url}/delete_user/${id}`);
+    return await axios.delete(url+"delete_user/"+id);
   };
   
 
 //Option
 
 export const getOptions = async () => {
-  return await axios.get(`${url}/options`);
+  return await axios.get(url+"options");
 };
 
 
 export const getOption = async (id) => {
-  id = id || "option";
   console.log("Sending option details request...");
   try {
-    const response = await axios.get(`${url}/option/${id}`);
+    const response = await axios.get(url+"option/"+id);
     console.log("List option details response:", response.data);
     console.log("Returned response data:", response);
     return response.data;
@@ -132,8 +135,7 @@ export const addOption = async (Option) => {
 };
 
 export const updateOption = async (id, Option) => {
-  console.log(`${url}/options/update/${id}`);
-  return await axios.put(`${url}/options/update/${id}`, Option, {
+  return await axios.put(url+"options/update/"+id, Option, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -141,21 +143,20 @@ export const updateOption = async (id, Option) => {
 };
 
 export const deleteOption = async (id) => {
-  return await axios.delete(`${url}/options/delete/${id}`);
+  return await axios.delete(url+"options/delete/"+id);
 };
 
 
 //Competence
 export const getCompetences = async () => {
-  return await axios.get(`${url}/competences`);
+  return await axios.get(url+"competences");
 };
 
 
 export const getCompetence = async (id) => {
-  id = id || "competence";
   console.log("Sending option details request...");
   try {
-    const response = await axios.get(`${url}/competence/${id}`);
+    const response = await axios.get(url+"competence/"+id);
     console.log("List competence details response:", response.data);
     console.log("Returned response data:", response);
     return response.data;
@@ -175,8 +176,7 @@ export const addCompetence = async (Competence) => {
 };
 
 export const updateCompetence = async (id, Competence) => {
-  console.log(`${url}/competences/update/${id}`);
-  return await axios.put(`${url}/competences/update/${id}`, Competence, {
+  return await axios.put(url+"competences/update/"+id, Competence, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -184,21 +184,20 @@ export const updateCompetence = async (id, Competence) => {
 };
 
 export const deleteCompetence = async (id) => {
-  return await axios.delete(`${url}/competences/delete/${id}`);
+  return await axios.delete(url+"competences/delete/"+id);
 };
 
 
 //Module 
 export const getModules = async () => {
-  return await axios.get(`${url}/modules`);
+  return await axios.get(url+"modules");
 };
 
 
 export const getModule = async (id) => {
-  id = id || "module";
   console.log("Sending module details request...");
   try {
-    const response = await axios.get(`${url}/module/${id}`);
+    const response = await axios.get(url+"module/"+id);
     console.log("List module details response:", response.data);
     console.log("Returned response data:", response);
     return response.data;
@@ -226,11 +225,10 @@ export const addModule = async (Module) => {
 };
 
 export const updateModule = async (id, Module) => {
-  console.log(`${url}/modules/update/${id}`);
   console.log("Module to be sent:", Module);
   
   try {
-    const response = await axios.put(`${url}/modules/update/${id}`, Module, {
+    const response = await axios.put(url+"modules/update/"+id, Module, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -246,6 +244,6 @@ export const updateModule = async (id, Module) => {
 
 
 export const deleteModule = async (id) => {
-  return await axios.delete(`${url}/modules/delete/${id}`);
+  return await axios.delete(url+"modules/delete/"+id);
 };
 

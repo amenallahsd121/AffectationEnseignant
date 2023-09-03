@@ -31,24 +31,16 @@ import {
 } from "reactstrap";
 import UserHeader from "components/Headers/UserHeader.js";
 import { getLoggedInUserInfo } from "service/api.js";
-import { useLocation } from "react-router-dom";
 
 const Profile = () => {
-  const location = useLocation();
-  const userInfoFromLocation = location.state.userInfo;
   const [userInfo, setUserInfo] = useState();
-
+  
   useEffect(() => {
     async function fetchUserInfo() {
       try {
-        const user = await getLoggedInUserInfo();
-        if (user.message === "Utilisateur non connecté.") {
-          // L'utilisateur n'est pas connecté, vous pouvez gérer cela en conséquence
-        } else {
-          // L'utilisateur est connecté, vous pouvez accéder aux informations de l'utilisateur
-          console.log(user.data); // Contient les données de l'utilisateur
-          setUserInfo(user.data);
-        }
+        const userInfo = await getLoggedInUserInfo();
+        setUserInfo(userInfo.data);
+        console.log("User info:", userInfo);
       } catch (error) {
         console.error('Error fetching user info:', error);
       }

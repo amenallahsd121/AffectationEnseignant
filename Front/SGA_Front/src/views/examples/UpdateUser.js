@@ -13,11 +13,14 @@ import {
   InputGroup,
   Label,
   InputGroupText,
-  InputGroupAddon
+  InputGroupAddon,
+  FormFeedback
 } from "reactstrap";
 import Header from "components/Headers/Header";
 import { update_user, list_user } from "service/api";
 import { useNavigate, useParams } from "react-router-dom";
+import { isValidUsername , isValidNomUtilisateur, isValidPrenomUtilisateur , isValidCustomEmail , isValidPassword  ,isValidNumeroTelephone } from "validation";
+
 
 const UpdateUser = () => {
   const { id } = useParams();
@@ -146,7 +149,11 @@ const UpdateUser = () => {
                   value={username}
                   autoComplete="off"
                   onChange={(e) => setPseudo(e.target.value)}
-                />
+                  invalid={!isValidUsername(username) || username === ""} 
+                  />
+                  {(!isValidUsername(username) || username === "") && (
+                    <FormFeedback>Le username ne peut pas être vide et doit commencer par une majuscule et contenir uniquement des lettres et des underscores.</FormFeedback>
+                  )}
               </InputGroup>
             </FormGroup>
             <FormGroup>
@@ -163,7 +170,11 @@ const UpdateUser = () => {
                   autoComplete="off"
                   value={nom_utilisateur}
                   onChange={(e) => setNomUtilisateur(e.target.value)}
-                />
+                  invalid={!isValidNomUtilisateur(nom_utilisateur) || nom_utilisateur === ""} 
+                  />
+                   {(!isValidNomUtilisateur(nom_utilisateur) || nom_utilisateur === "") && (
+                   <FormFeedback>Le nom ne peut pas être vide et doit commencer par une majuscule et contenir uniquement des lettres et des espaces.</FormFeedback>
+                 )}
               </InputGroup>
             </FormGroup>
             <FormGroup>
@@ -180,7 +191,11 @@ const UpdateUser = () => {
                   autoComplete="off"
                   value={prenom_utilisateur}
                   onChange={(e) => setPrenomUtilisateur(e.target.value)}
-                />
+                  invalid={!isValidPrenomUtilisateur(prenom_utilisateur) || prenom_utilisateur === ""} 
+                  />
+                   {(!isValidPrenomUtilisateur(prenom_utilisateur) || prenom_utilisateur === "") && (
+                   <FormFeedback>Le prenom ne peut pas être vide et doit commencer par une majuscule et contenir uniquement des lettres et des espaces.</FormFeedback>
+                 )}
               </InputGroup>
             </FormGroup>
             <FormGroup>
@@ -197,7 +212,11 @@ const UpdateUser = () => {
                   autoComplete="new-email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                />
+                  invalid={!isValidCustomEmail(nom_utilisateur, prenom_utilisateur, email) || email === ""} 
+                  />
+                   {(!isValidCustomEmail(nom_utilisateur, prenom_utilisateur, email) || email === "") && (
+                   <FormFeedback>L'email doit être sous la forme "prenom_utilisateur.nom_utilisateur@esprit.tn".</FormFeedback>
+                 )}
               </InputGroup>
             </FormGroup>
             <FormGroup>
@@ -214,7 +233,11 @@ const UpdateUser = () => {
                   autoComplete="new-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                />
+                  invalid={!isValidPassword(password) || password === ""} 
+                  />
+                   {(!isValidPassword(password) || password === "") && (
+                   <FormFeedback>Le mot de passe doit comporter entre 8 et 20 caractères et inclure des lettres, des chiffres et des caractères spéciaux.</FormFeedback>
+                 )}
               </InputGroup>
             </FormGroup>
             <FormGroup>
@@ -240,7 +263,11 @@ const UpdateUser = () => {
                   name="numero_de_telephone"
                   autoComplete="off"
                   onChange={(e) => setNumeroDeTelephone(e.target.value)}
-                />
+                  invalid={!numero_de_telephone || !isValidNumeroTelephone(numero_de_telephone)}
+                  />
+                  {(!numero_de_telephone || !isValidNumeroTelephone(numero_de_telephone)) && (
+                    <FormFeedback>Le numéro de téléphone doit comporter exactement 8 chiffres.</FormFeedback>
+                  )}
               </InputGroup>
             </FormGroup>
             <FormGroup>

@@ -32,7 +32,7 @@ import {
 } from "reactstrap";
 import { user_login } from "service/api.js";
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -47,10 +47,9 @@ const Login = () => {
     try {
       const response = await user_login({ email, password });
       // Assuming the response contains a 'data' field with a success message
-      console.log(response.data.message);
-      if (response.data.message === "Connexion avec succès!") {
-        //navigate("/admin/user-profile", { state: { userInfo: response.data } });
-        navigate("/admin/index");
+      console.log(response.message);
+      if (response.message === "Connexion avec succès!") {
+        navigate("/admin/user-profile");
       } else {
         console.log("Erreur");
       }
