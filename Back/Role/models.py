@@ -5,7 +5,7 @@ from django.db import models
 from django.core.validators import MaxValueValidator
 
 class Role(models.Model):
-    nom = models.CharField(max_length=255)
+    nom = models.CharField(max_length=255,unique=True)
     description = models.TextField()
     charge_horaire = models.IntegerField(validators=[MaxValueValidator(378)], null=True, blank=True)
 

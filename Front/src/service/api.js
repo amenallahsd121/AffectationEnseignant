@@ -2,7 +2,9 @@ import axios from "axios";
 
 const url = "http://127.0.0.1:8000/api";
 
-//////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////  NIVEAU  ////////////////////////////////////////////////////////////////////////
+
 
 export const getNiveaux = async (id) => {
   id = id || "";
@@ -30,7 +32,9 @@ export const deleteNiveau = async (id) => {
   return await axios.delete(`${url}/delete/${id}`);
 };
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////  CLASSE  ////////////////////////////////////////////////////////////////////////
+
 
 export const getClasses = async (id) => {
   let apiUrl = `${url}/classe`;
@@ -64,7 +68,7 @@ export const deleteClasse = async (id) => {
 };
 
 
-/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////  CONGES  ////////////////////////////////////////////////////////////////////////
 
 
 export const getCongess = async (id) => {
@@ -75,6 +79,10 @@ export const getCongess = async (id) => {
   }
     return await axios.get(apiUrl);
 
+};
+
+export const getConges = async (id) => {
+  return await axios.get(`${url}/conges/${id}`);
 };
 
 export const addConges = async (Conges) => {
@@ -94,6 +102,115 @@ export const updateConges = async (id, Classe) => {
     },
   });
 };
+
 export const deleteConges = async (id) => {
   return await axios.delete(`${url}/conges/delete/${id}`);
+};
+
+
+/////////////////////////////////////////////////////////////  USER  ////////////////////////////////////////////////////////////////////////
+
+
+export const getUsers = async (id) => {
+  let apiUrl = `${url}/user`;
+
+  if (id) {
+    apiUrl += `/${id}`;
+  }
+    return await axios.get(apiUrl);
+
+};
+
+
+/////////////////////////////////////////////////////////////  AFFECTATION  ////////////////////////////////////////////////////////////////////////
+
+
+export const getAffectations = async (id) => {
+  let apiUrl = `${url}/affectation`;
+
+  if (id) {
+    apiUrl += `/${id}`;
+  }
+    return await axios.get(apiUrl);
+
+};
+
+export const getAffectation = async (id) => {
+  return await axios.get(`${url}/affectation/${id}`);
+};
+
+export const addAffectation = async (Affectation) => {
+  console.log(Affectation);
+  return await axios.post(url + "/affectation/add/", Affectation, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export const updateAffectation = async (id, Affectation) => {
+  console.log(`${url}/update/${id}`);
+  return await axios.put(`${url}/affectation/update/${id}`, Affectation, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export const deleteAffectation = async (id) => {
+  return await axios.delete(`${url}/affectation/delete/${id}`);
+};
+
+
+//////////////////////////////////////////////////////////  MODULE  ////////////////////////////////////////////////////////////////////
+
+
+export const getModules = async (id) => {
+  let apiUrl = `${url}/module`;
+
+  if (id) {
+    apiUrl += `/${id}`;
+  }
+    return await axios.get(apiUrl);
+
+};
+
+
+//////////////////////////////////////////////////////////  CONFIGURATION  ////////////////////////////////////////////////////////////////////
+
+
+export const getConfigurations = async (id) => {
+  let apiUrl = `${url}/configuration`;
+
+  if (id) {
+    apiUrl += `/${id}`;
+  }
+    return await axios.get(apiUrl);
+
+};
+
+export const getConfiguration = async (id) => {
+  return await axios.get(`${url}/configuration/${id}`);
+};
+
+export const addConfiguration = async (Configuration) => {
+  console.log(Configuration);
+  return await axios.post(url + "/configuration/add/", Configuration, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export const updateConfiguration = async (id, Configuration) => {
+  console.log(`${url}/update/${id}`);
+  return await axios.put(`${url}/configuration/update/${id}`, Configuration, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export const deleteConfiguration = async (id) => {
+  return await axios.delete(`${url}/configuration/delete/${id}`);
 };

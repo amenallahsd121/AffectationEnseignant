@@ -14,4 +14,7 @@ class Conges(models.Model):
 
     
     def __str__(self):
-         return self.type 
+        if self.user:
+            return f"Conges for {self.user.username}"
+        else:
+            return f"Conges (User not specified)"

@@ -31,4 +31,30 @@ urlpatterns = [
 
 
 
+   path('user', getUsers),
+   path('user/<int:id>', getUser),
+
+
+
+# //////////////////////////////////////////////////////////////////
+
+    path('affectation', getAffectations),
+    path('affectation/<int:id>', getAffectation),
+    path('affectation/add/', addAffectation),
+    path('affectation/update/<int:id>', updateAffectation),
+    path('affectation/delete/<int:id>', deleteAffectation),
+
+ # //////////////////////////////////////////////////////////////////
+
+   path('module ', getModules),
+   path('module/<int:id>', getModule  ),
+
+   # //////////////////////////////////////////////////////////////////
+
+    path('configuration', getConfigurations),
+    path('configuration/<int:id>', getConfiguration),
+    path('configuration/add/', addConfiguration),
+    path('configuration/update/<int:id>', updateConfiguration),
+    path('configuration/delete/<int:id>', deleteConfiguration),
+
 ]

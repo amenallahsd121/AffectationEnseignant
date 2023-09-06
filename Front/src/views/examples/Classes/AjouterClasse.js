@@ -42,19 +42,19 @@ const AjouterClasse = () => {
 
     if (nomClasse && niveaurelatif) {
       try {
-        // Find the selected niveau object based on the niveau name
+        
         const selectedNiveau = niveaux.find(
           (niveau) => niveau.nom === niveaurelatif
         );
 
         if (selectedNiveau) {
-          // Prepare the data for adding a new class
+          
           const classeData = {
             nom: nomClasse,
             niveau: selectedNiveau.id,
           };
 
-          // Add the class by making an API call
+          
           const response = await addClasse(classeData);
 
           navigate("/admin/classes");
@@ -65,7 +65,7 @@ const AjouterClasse = () => {
         console.error("Error:", error);
       }
     } else {
-      // Handle missing data or show validation error
+     
     }
   };
 

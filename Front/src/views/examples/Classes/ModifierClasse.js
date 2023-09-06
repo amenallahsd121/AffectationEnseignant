@@ -68,7 +68,7 @@ const ModifierClasse = () => {
                 <CardHeader className="bg-white border-0">
                   <Row className="align-items-center">
                     <Col xs="8">
-                      <h3 className="mb-0">Ajouter une classe</h3>
+                      <h3 className="mb-0">Modifier une classe</h3>
                     </Col>
                   </Row>
                 </CardHeader>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Card,
@@ -14,17 +14,63 @@ import {
 import Header from "components/Headers/Header";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // Import the default styles
-import { addNiveau } from "../../../service/api";
+import { getUsers, addConges } from "../../../service/api";
 import { useNavigate } from "react-router-dom";
 
 const AjouterConges = () => {
+  
+  const [selectedUserName, setSelectedUserName] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [finDate, setFintDate] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState(""); // Add this line
+  const [selectedType, setSelectedType] = useState(""); // Add this line
+
+  const differenceInDays =
+    startDate && finDate
+      ? Math.floor((finDate - startDate) / (1000 * 60 * 60 * 24))
+      : 0;
 
   const navigate = useNavigate();
   const handleAnnulerClick = () => {
     navigate("/admin/conges ");
   };
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await getUsers();
+        setUsers(response.data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  const handleAjouterClick = async () => {
+    try {
+      const selectedUser = users.find(user => user.id === parseInt(selectedUserId));
+  
+  
+      const congesData = {
+        user: selectedUser.id, 
+        type: selectedType,
+        duree: differenceInDays,
+        datedebut: startDate.toISOString().split("T")[0],
+        datefin: finDate.toISOString().split("T")[0],
+      };
+  
+      const response = await addConges(congesData);
+      console.log("API Response:", response.data);
+  
+      navigate("/admin/conges");
+    } catch (error) {
+      console.error("Error adding conges:", error);
+    }
+  };
+  
 
   return (
     <>
@@ -40,7 +86,7 @@ const AjouterConges = () => {
                 <CardHeader className="bg-white border-0">
                   <Row className="align-items-center">
                     <Col xs="8">
-                      <h3 className="mb-0">Ajouter un congé</h3>
+                      <h3 className="mb-0">Affecter un congé</h3>
                     </Col>
                   </Row>
                 </CardHeader>
@@ -55,15 +101,25 @@ const AjouterConges = () => {
                         <FormGroup>
                           <label
                             className="form-control-label"
-                            htmlFor="input-username"
+                            htmlFor="personne"
                           >
                             Personne concernée
-                          </label>
+                          </label>  
                           <Input
                             className="form-control-alternative"
                             id="personne"
-                            type="text"
-                          />
+                            type="select"
+                            onChange={(e) => setSelectedUserId(e.target.value)}
+                          >
+                            <option value="" disabled selected>
+                              Sélectionnez la personne
+                            </option>
+                            {users.map((user) => (
+                              <option key={user.id} value={user.id}>
+                                {user.prenom_utilisateur} {user.nom_utilisateur}
+                              </option>
+                            ))}
+                          </Input>
                         </FormGroup>
                       </Col>
                     </Row>
@@ -73,7 +129,7 @@ const AjouterConges = () => {
                         <FormGroup>
                           <label
                             className="form-control-label"
-                            htmlFor="input-country"
+                            htmlFor="typeconges"
                           >
                             Type du congé
                           </label>
@@ -81,8 +137,7 @@ const AjouterConges = () => {
                             className="form-control-alternative"
                             id="typeconges"
                             type="select"
-                            // value={niveaurelatif}
-                            // onChange={(e) => setNiveauRealtif(e.target.value)}
+                            onChange={(e) => setSelectedType(e.target.value)}
                           >
                             <option value="" disabled selected>
                               Sélectionnez le type
@@ -93,12 +148,13 @@ const AjouterConges = () => {
                         </FormGroup>
                       </Col>
                     </Row>
+
                     <Row>
                       <Col xs="12">
                         <FormGroup>
                           <label
                             className="form-control-label"
-                            htmlFor="input-country"
+                            htmlFor="nombredeclasse"
                           >
                             Nombre des jours
                           </label>
@@ -106,8 +162,9 @@ const AjouterConges = () => {
                             className="form-control-alternative"
                             id="nombredeclasse"
                             placeholder=""
-                            type="number"
-                            min={1}
+                            type="text"
+                            value={differenceInDays} // Display calculated difference here
+                            readOnly // Make the input read-only
                           />
                         </FormGroup>
                       </Col>
@@ -118,42 +175,55 @@ const AjouterConges = () => {
                         <FormGroup>
                           <label
                             className="form-control-label"
-                            htmlFor="input-country"
+                            htmlFor="datedebut"
                           >
-                            Date début et fin du congé
+                            Date début du congé
                           </label>
-                          <div className="d-flex justify-content-center">
-                            <DatePicker
-                              className="form-control form-control-alternative"
-                              selected={startDate}
-                              onChange={(date) => setStartDate(date)}
-                              dateFormat="yyyy-MM-dd"
-                              //style={datePickerStyle}
-                              placeholderText="Date début"
-                            />
-                            <DatePicker
-                              className="form-control form-control-alternative ml-2"
-                              selected={finDate}
-                              onChange={(date) => setFintDate(date)}
-                              dateFormat="yyyy-MM-dd"
-                              //style={datePickerStyle}
-                              placeholderText="Date fin"
-                            />
-                          </div>
+                          <DatePicker
+                            className="form-control form-control-alternative"
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                            dateFormat="yyyy-MM-dd"
+                            placeholderText="Date début"
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+
+                    <Row>
+                      <Col xs="12">
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="datefin"
+                          >
+                            Date de reprise
+                          </label>
+                          <DatePicker
+                            className="form-control form-control-alternative"
+                            selected={finDate}
+                            onChange={(date) => setFintDate(date)}
+                            minDate={startDate}
+                            excludeDates={[startDate]} 
+                            dateFormat="yyyy-MM-dd"
+                            placeholderText="Date de reprise"
+                          />
                         </FormGroup>
                       </Col>
                     </Row>
 
                     <Row className="justify-content-center">
                       <Col xs="12" className="text-center">
-                        <Button color="primary">Ajouter</Button>
+                        <Button color="primary" onClick={handleAjouterClick}>
+                        Affecter
+                        </Button>
                         <Button
-                        color="primary"
-                        onClick={handleAnnulerClick}
-                        size="mg"
-                      >
-                        Annuler
-                      </Button>
+                          color="primary"
+                          onClick={handleAnnulerClick}
+                          size="mg"
+                        >
+                          Annuler
+                        </Button>
                       </Col>
                     </Row>
                   </Form>

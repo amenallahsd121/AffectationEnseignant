@@ -14,6 +14,9 @@ import ModifierClasse from "views/examples/Classes/ModifierClasse";
 import Conges from "views/examples/Conges/Conges";
 import AjouterConges from "views/examples/Conges/AjouterConges";
 import ModifierConges from "views/examples/Conges/ModifierConges";
+import Affectation from "views/examples/Affectation/Affectation";
+import AjouterAffectation from "views/examples/Affectation/AjouterAffectation";
+import ModifierAffectation from "views/examples/Affectation/ModifierAffectation";
 
 
 var routes = [
@@ -24,13 +27,13 @@ var routes = [
     component: <Index />,
     layout: "/admin",
   },
-  {
-    path: "/icons",
-    name: "Icons",
-    icon: "ni ni-badge text-blue",
-    component: <Icons />,
-    layout: "/admin",
-  },
+  // {
+  //   path: "/icons",
+  //   name: "Icons",
+  //   icon: "ni ni-badge text-blue",
+  //   component: <Icons />,
+  //   layout: "/admin",
+  // },
   {
     path: "/niveaux",
     name: "Niveaux",
@@ -53,33 +56,49 @@ var routes = [
     layout: "/admin",
   },
   {
-    path: "/user-profile",
-    name: "User Profile",
-    icon: "ni ni-single-02 text-yellow",
-    component: <Profile />,
+    path: "/affectation",
+    name: "Affecter Enseignant",
+    icon: "ni ni-check-bold text-blue",
+    component: <Affectation />,
     layout: "/admin",
   },
-  {
-    path: "/tables",
-    name: "Tables",
-    icon: "ni ni-bullet-list-67 text-red",
-    component: <Tables />,
-    layout: "/admin",
-  },
-  {
-    path: "/login",
-    name: "Login",
-    icon: "ni ni-key-25 text-info",
-    component: <Login />,
-    layout: "/auth",
-  },
-  {
-    path: "/register",
-    name: "Register",
-    icon: "ni ni-circle-08 text-pink",
-    component: <Register />,
-    layout: "/auth",
-  },
+  // {
+  //   path: "/user-profile",
+  //   name: "User Profile",
+  //   icon: "ni ni-single-02 text-yellow",
+  //   component: <Profile />,
+  //   layout: "/admin",
+  // },
+  // {
+  //   path: "/tables",
+  //   name: "Tables",
+  //   icon: "ni ni-bullet-list-67 text-red",
+  //   component: <Tables />,
+  //   layout: "/admin",
+  // },
+  // {
+  //   path: "/login",
+  //   name: "Login",
+  //   icon: "ni ni-key-25 text-info",
+  //   component: <Login />,
+  //   layout: "/auth",
+  // },
+  // {
+  //   path: "/register",
+  //   name: "Register",
+  //   icon: "ni ni-circle-08 text-pink",
+  //   component: <Register />,
+  //   layout: "/auth",
+  // },
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
   {
     path: "/ajouterniveau",
     name: "ajouterniveau",
@@ -121,12 +140,29 @@ var routes = [
     hidden: true,
   },
   {
-    path: "/modifierconges",
+    path: "/modifierconges/:id",
     name: "modifierconges",
     icon: "ni ni-archive-2 text-blue",
     component: <ModifierConges />,
     layout: "/admin",
     hidden: true,
   },
+  {
+    path: "/ajouteraffectation",
+    name: "ajouteraffectation",
+    icon: "ni ni-circle-08 text-pink",
+    component: <AjouterAffectation />,
+    layout: "/admin",
+    hidden: true,
+  },
+  {
+    path: "/modifieraffectation/:id",
+    name: "modifieraffectation",
+    icon: "ni ni-circle-08 text-pink",
+    component: <ModifierAffectation />,
+    layout: "/admin",
+    hidden: true,
+  },
+
 ];
 export default routes;
