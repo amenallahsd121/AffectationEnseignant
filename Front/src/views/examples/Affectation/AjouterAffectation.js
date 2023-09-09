@@ -19,6 +19,7 @@ const AjouterAffectation = () => {
   const navigate = useNavigate();
   const [selectedEnseignant, setSelectedEnseignant] = useState("");
   const [selectedModule, setSelectedModule] = useState("");
+  const [selectedSemestre, setSelectedSemestre] = useState("");
   const [utilisateurs, setUtilisateurs] = useState([]);
   const [modules, setModules] = useState([]);
 
@@ -33,13 +34,14 @@ const AjouterAffectation = () => {
     };
 
     const fetchModulesData = async () => {
-      try {
-        const response = await getModules();
-        setModules(response.data);
-      } catch (error) {
-        console.error("Error fetching modules:", error);
-      }
-    };
+        try {
+          const response = await getModules();
+          setModules(response.data);
+        } catch (error) {
+          console.error("Error fetching modules:", error);
+        }
+      };
+      
 
     fetchUtilisateursData();
     fetchModulesData();
@@ -52,11 +54,12 @@ const AjouterAffectation = () => {
   const handleAjouterClick = async (e) => {
     e.preventDefault();
 
-    if (selectedEnseignant && selectedModule) {
+    if (selectedEnseignant && selectedModule && selectedSemestre) {
       try {
         const affectationData = {
           Utilisateur: selectedEnseignant,
           Module: selectedModule,
+          Semestre: selectedSemestre, 
         };
 
         const response = await addAffectation(affectationData);
@@ -66,7 +69,7 @@ const AjouterAffectation = () => {
         console.error("Error:", error);
       }
     } else {
-     //////
+     
     }
   };
 
@@ -130,6 +133,24 @@ const AjouterAffectation = () => {
                             {module.nom}
                           </option>
                         ))}
+                      </Input>
+                    </FormGroup>
+                    <FormGroup>
+                      <label className="form-control-label" htmlFor="input-semestre">
+                        Semestre
+                      </label>
+                      <Input
+                        className="form-control-alternative"
+                        id="input-semestre"
+                        type="select"
+                        value={selectedSemestre}
+                        onChange={(e) => setSelectedSemestre(e.target.value)}
+                      >
+                        <option value="" disabled>
+                          Sélectionnez un Semestre
+                        </option>
+                        <option value="1">Semestre 1</option>
+                        <option value="2">Semestre 2</option>
                       </Input>
                     </FormGroup>
                     <Row className="justify-content-center">

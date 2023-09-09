@@ -42,7 +42,8 @@ class UserSerializer(serializers.ModelSerializer):
 class AffectationSerializer(serializers.ModelSerializer):
     nomuser = serializers.ReadOnlyField(source='Utilisateur.nom_utilisateur')
     prenomuser = serializers.ReadOnlyField(source='Utilisateur.prenom_utilisateur')
-    nommodule = serializers.ReadOnlyField(source='Module.nom')  
+    nommodule = serializers.ReadOnlyField(source='Module.nom') 
+    ConfigurationRead = serializers.ReadOnlyField(source='Configuration.Année_Universitaire')  
 
     class Meta:
         model = Affectation
@@ -59,4 +60,5 @@ class ConfigurationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Configuration
         fields = '__all__'
+
     

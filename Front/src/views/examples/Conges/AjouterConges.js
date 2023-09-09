@@ -12,14 +12,12 @@ import {
   Input,
 } from "reactstrap";
 import Header from "components/Headers/Header";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // Import the default styles
 import { getUsers, addConges } from "../../../service/api";
 import { useNavigate } from "react-router-dom";
 
 const AjouterConges = () => {
   
-  const [selectedUserName, setSelectedUserName] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [finDate, setFintDate] = useState(null);
   const [users, setUsers] = useState([]);
@@ -33,7 +31,7 @@ const AjouterConges = () => {
 
   const navigate = useNavigate();
   const handleAnnulerClick = () => {
-    navigate("/admin/conges ");
+    navigate("/admin/conges");
   };
 
   useEffect(() => {
@@ -52,35 +50,29 @@ const AjouterConges = () => {
   const handleAjouterClick = async () => {
     try {
       const selectedUser = users.find(user => user.id === parseInt(selectedUserId));
-  
-  
       const congesData = {
-        user: selectedUser.id, 
+        user: selectedUser.id,
         type: selectedType,
         duree: differenceInDays,
-        datedebut: startDate.toISOString().split("T")[0],
-        datefin: finDate.toISOString().split("T")[0],
+        datedebut: startDate ? startDate.toISOString().split("T")[0] : null,
+        datefin: finDate ? finDate.toISOString().split("T")[0] : null,
       };
-  
+
       const response = await addConges(congesData);
       console.log("API Response:", response.data);
-  
+
       navigate("/admin/conges");
     } catch (error) {
       console.error("Error adding conges:", error);
     }
   };
-  
 
   return (
     <>
       <Header />
       <div className="bg-secondary" style={{ minHeight: "100vh" }}>
         <Container className="mt--7" fluid>
-          <Row
-            style={{ marginTop: "150px" }}
-            className="justify-content-center"
-          >
+          <Row style={{ marginTop: "150px" }} className="justify-content-center">
             <Col lg="10">
               <Card className="shadow p-4">
                 <CardHeader className="bg-white border-0">
@@ -104,7 +96,7 @@ const AjouterConges = () => {
                             htmlFor="personne"
                           >
                             Personne concernée
-                          </label>  
+                          </label>
                           <Input
                             className="form-control-alternative"
                             id="personne"
@@ -171,42 +163,26 @@ const AjouterConges = () => {
                     </Row>
 
                     <Row>
-                      <Col xs="12">
+                      <Col xs="6">
                         <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="datedebut"
-                          >
-                            Date début du congé
-                          </label>
-                          <DatePicker
-                            className="form-control form-control-alternative"
-                            selected={startDate}
-                            onChange={(date) => setStartDate(date)}
-                            dateFormat="yyyy-MM-dd"
-                            placeholderText="Date début"
+                          <label className="form-control-label">Date de début</label>
+                          <Input
+                            className="form-control-alternative"
+                            type="date"
+                            value={startDate ? startDate.toISOString().split("T")[0] : ""}
+                            onChange={(e) => setStartDate(new Date(e.target.value))}
                           />
                         </FormGroup>
                       </Col>
-                    </Row>
-
-                    <Row>
-                      <Col xs="12">
+                      <Col xs="6">
                         <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="datefin"
-                          >
-                            Date de reprise
-                          </label>
-                          <DatePicker
-                            className="form-control form-control-alternative"
-                            selected={finDate}
-                            onChange={(date) => setFintDate(date)}
-                            minDate={startDate}
-                            excludeDates={[startDate]} 
-                            dateFormat="yyyy-MM-dd"
-                            placeholderText="Date de reprise"
+                          <label className="form-control-label">Date de reprise</label>
+                          <Input
+                            className="form-control-alternative"
+                            type="date"
+                            value={finDate ? finDate.toISOString().split("T")[0] : ""}
+                            onChange={(e) => setFintDate(new Date(e.target.value))}
+                            min={startDate ? startDate.toISOString().split("T")[0] : ""}
                           />
                         </FormGroup>
                       </Col>
@@ -215,7 +191,7 @@ const AjouterConges = () => {
                     <Row className="justify-content-center">
                       <Col xs="12" className="text-center">
                         <Button color="primary" onClick={handleAjouterClick}>
-                        Affecter
+                          Affecter
                         </Button>
                         <Button
                           color="primary"

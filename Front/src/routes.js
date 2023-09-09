@@ -17,6 +17,9 @@ import ModifierConges from "views/examples/Conges/ModifierConges";
 import Affectation from "views/examples/Affectation/Affectation";
 import AjouterAffectation from "views/examples/Affectation/AjouterAffectation";
 import ModifierAffectation from "views/examples/Affectation/ModifierAffectation";
+import Configuration from "views/examples/Configuration/Configuration";
+import AjouterConfiguration from "views/examples/Configuration/AjouterConfiguration";
+import ModifierConfiguration from "views/examples/Configuration/ModifierConfiguration";
 
 
 var routes = [
@@ -25,6 +28,13 @@ var routes = [
     name: "Dashboard",
     icon: "ni ni-tv-2 text-primary",
     component: <Index />,
+    layout: "/admin",
+  },
+  {
+    path: "/configuration",
+    name: "Configuration",
+    icon: "ni ni-calendar-grid-58 text-blue",
+    component: <Configuration />,
     layout: "/admin",
   },
   // {
@@ -160,6 +170,22 @@ var routes = [
     name: "modifieraffectation",
     icon: "ni ni-circle-08 text-pink",
     component: <ModifierAffectation />,
+    layout: "/admin",
+    hidden: true,
+  },
+  {
+    path: "/ajouterconfiguration",
+    name: "ajouterconfiguration",
+    icon: "ni ni-circle-08 text-pink",
+    component: <AjouterConfiguration />,
+    layout: "/admin",
+    hidden: true,
+  },
+  {
+    path: "/modifierconfiguration/:id",
+    name: "modifierconfiguration",
+    icon: "ni ni-circle-08 text-pink",
+    component: <ModifierConfiguration />,
     layout: "/admin",
     hidden: true,
   },

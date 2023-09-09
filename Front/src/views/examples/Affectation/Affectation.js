@@ -77,6 +77,12 @@ const Affectation = () => {
                         Nom Enseignant
                     </th>
                     <th className="text-center">Module Relatif</th>
+                    <th className="text-left" style={{ paddingLeft: "135px" }}>
+                        Année Universitaire
+                    </th>
+                    <th className="text-left" style={{ paddingLeft: "80px" }}>
+                        Semestre
+                    </th>
                     <th className="text-right" style={{ paddingRight: "193px" }}>
                       Action
                     </th>
@@ -95,6 +101,8 @@ const Affectation = () => {
                           {affectation.nommodule}
                         </Badge>
                       </td>
+                      <td style={{ verticalAlign: "middle", textAlign: "center" }}>{affectation.ConfigurationRead}</td>
+                      <td style={{ verticalAlign: "middle", textAlign: "center" }}>{affectation.Semestre}</td>
                       <td className="text-right">
                         <Button
                           className="mr-2"

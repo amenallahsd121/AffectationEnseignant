@@ -26,6 +26,7 @@ const ModifierAffectation = () => {
 
   const [selectedEnseignant, setSelectedEnseignant] = useState(""); // Set initial value
   const [selectedModule, setSelectedModule] = useState(""); // Set initial value
+  const [selectedSemestre, setSelectedSemestre] = useState(""); // Change to an empty string initially
   const [utilisateurs, setUtilisateurs] = useState([]);
   const [modules, setModules] = useState([]);
   const [currentAffectation, setCurrentAffectation] = useState(null);
@@ -43,9 +44,9 @@ const ModifierAffectation = () => {
         setModules(modulesResponse.data);
         setCurrentAffectation(affectationData);
 
-       
         setSelectedEnseignant(affectationData.Utilisateur);
-        setSelectedModule(affectationData.Module); 
+        setSelectedModule(affectationData.Module);
+        setSelectedSemestre(affectationData.Semestre); // Set the initial value for Semestre
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -61,29 +62,23 @@ const ModifierAffectation = () => {
   const handleUpdateClick = async (e) => {
     e.preventDefault();
 
-   
-
-    if (selectedEnseignant && selectedModule) {
+    if (selectedEnseignant && selectedModule && selectedSemestre) {
       try {
         const updatedAffectationData = {
           id: id,
           Utilisateur: selectedEnseignant,
-          Module: selectedModule, 
+          Module: selectedModule,
+          Semestre: selectedSemestre, // Include Semestre in the updated data
         };
 
-      //  console.log("wwwwwwwwwwwwwwwwwwwwwwwwwww", updatedAffectationData);
-
         await updateAffectation(id, updatedAffectationData);
-
-       
 
         navigate("/admin/affectation");
       } catch (error) {
         console.error("Error updating affectation:", error);
       }
     } else {
-     // console.error(
-       // "fffffffffffffffffffffffffff" 
+      console.error("Please fill in all fields");
     }
   };
 
@@ -123,12 +118,10 @@ const ModifierAffectation = () => {
                         id="input-enseignant"
                         type="select"
                         value={selectedEnseignant}
-                        onChange={(e) => setSelectedEnseignant(e.target.value)}
+                        onChange={(e) =>
+                          setSelectedEnseignant(e.target.value)
+                        }
                       >
-                       
-                   
-
-                       
                         {utilisateurs.map(
                           (utilisateur) =>
                             utilisateur.id !==
@@ -159,10 +152,6 @@ const ModifierAffectation = () => {
                         value={selectedModule}
                         onChange={(e) => setSelectedModule(e.target.value)}
                       >
-                       
-                        
-
-                       
                         {modules.map(
                           (module) =>
                             module.id !== currentAffectation?.Module.id && (
@@ -171,6 +160,28 @@ const ModifierAffectation = () => {
                               </option>
                             )
                         )}
+                      </Input>
+                    </FormGroup>
+
+                    <FormGroup>
+                      <label
+                        className="form-control-label"
+                        htmlFor="input-semestre"
+                      >
+                        Semestre
+                      </label>
+                      <Input
+                        className="form-control-alternative"
+                        id="input-semestre"
+                        type="select" // Change to a select input
+                        value={selectedSemestre}
+                        onChange={(e) => setSelectedSemestre(e.target.value)}
+                      >
+                        <option value="" disabled>
+                          
+                        </option>
+                        <option value="1">Semestre 1</option>
+                        <option value="2">Semestre 2</option>
                       </Input>
                     </FormGroup>
 
