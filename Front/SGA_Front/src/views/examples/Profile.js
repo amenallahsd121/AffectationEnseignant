@@ -39,7 +39,7 @@ const Profile = () => {
     async function fetchUserInfo() {
       try {
         const userInfo = await getLoggedInUserInfo();
-        setUserInfo(userInfo.data);
+        setUserInfo(userInfo);
         console.log("User info:", userInfo);
       } catch (error) {
         console.error('Error fetching user info:', error);
@@ -66,7 +66,7 @@ const Profile = () => {
                       <img
                         alt="..."
                         className="rounded-circle"
-                        src={require("../../assets/img/theme/team-4-800x800.jpg")}
+                        src={require("../../assets/img/theme/user.png")}
                       />
                     
                   </div>
@@ -90,8 +90,12 @@ const Profile = () => {
                      {userInfo.username}
                   </h3>
                   <div className="h5 mt-4">
+                      <i className="ni business_briefcase-24 mr-2" />
+                      Vous êtes un : {userInfo.is_superuser ? "Administrateur" : "Membre"}
+                  </div>
+                  <div className="h5 mt-4">
                     <i className="ni business_briefcase-24 mr-2" />
-                    {userInfo.grade}
+                    Vous nous avez rejoignez le : {userInfo.date_joined}
                   </div>
                   
                   <hr className="my-4" />
@@ -164,7 +168,7 @@ const Profile = () => {
                           </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue={userInfo.nom_utilisateur}
+                            defaultValue={userInfo.last_name}
                             id="input-first-name"
                             placeholder="Nom"
                             type="text"
@@ -182,7 +186,7 @@ const Profile = () => {
                           </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue={userInfo.prenom_utilisateur}
+                            defaultValue={userInfo.first_name}
                             id="input-last-name"
                             placeholder="Prénom"
                             type="text"
@@ -195,33 +199,7 @@ const Profile = () => {
                   </div>
                   <hr className="my-4" />
                   {/* Address */}
-                  <h6 className="heading-small text-muted mb-4">
-                    Fonction
-                  </h6>
-                  <div className="pl-lg-4">
-                    <Row>
-                    <Col lg="12">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-grade"
-                          >
-                           Grade
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue={userInfo.grade}
-                            id="input-grade"
-                            placeholder="Grade"
-                            type="text"
-                            readOnly
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    
-                  </div>
-                 
+                  
           
                 </Form>
               </CardBody>

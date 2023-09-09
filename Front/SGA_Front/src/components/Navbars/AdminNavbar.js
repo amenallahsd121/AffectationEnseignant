@@ -16,6 +16,8 @@
 
 */
 import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { getLoggedInUserInfo , user_logout} from "service/api.js";
 // reactstrap components
 import {
   DropdownMenu,
@@ -33,8 +35,49 @@ import {
   Container,
   Media,
 } from "reactstrap";
+import { useNavigate } from "react-router-dom";
 
 const AdminNavbar = (props) => {
+  const navigate = useNavigate();
+
+
+  const [userInfo, setUserInfo] = useState();
+
+  useEffect(() => {
+    async function fetchUserInfo() {
+      try {
+        const userInfo = await getLoggedInUserInfo();
+        setUserInfo(userInfo);
+        console.log("User info:", userInfo);
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    }
+  
+    fetchUserInfo();
+  }, []);
+
+  if (!userInfo) {
+    return <div>Loading user data...</div>;
+  }
+
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    
+    try {
+       
+        await user_logout();
+        
+        localStorage.removeItem('userToken');
+
+        navigate("/auth/login");
+        
+    } catch (error) {
+        console.error("Error while logging out:", error);
+    }
+};
+
   return (
     <>
       <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
@@ -64,28 +107,28 @@ const AdminNavbar = (props) => {
                   <span className="avatar avatar-sm rounded-circle">
                     <img
                       alt="..."
-                      src={require("../../assets/img/theme/team-4-800x800.jpg")}
+                      src={require("../../assets/img/theme/user.png")}
                     />
                   </span>
                   <Media className="ml-2 d-none d-lg-block">
                     <span className="mb-0 text-sm font-weight-bold">
-                      Jessica Jones
+                      {userInfo.username}
                     </span>
                   </Media>
                 </Media>
               </DropdownToggle>
               <DropdownMenu className="dropdown-menu-arrow" right>
                 <DropdownItem className="noti-title" header tag="div">
-                  <h6 className="text-overflow m-0">Welcome!</h6>
+                  <h6 className="text-overflow m-0">Bienvenue!</h6>
                 </DropdownItem>
                 <DropdownItem to="/admin/user-profile" tag={Link}>
                   <i className="ni ni-single-02" />
-                  <span>My profile</span>
+                  <span>Mon compte</span>
                 </DropdownItem>
                 <DropdownItem divider />
-                <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
-                  <i className="ni ni-user-run" />
-                  <span>Logout</span>
+                <DropdownItem onClick={handleLogout}>
+                    <i className="ni ni-user-run" />
+                    <span>Déconnexion</span>
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>

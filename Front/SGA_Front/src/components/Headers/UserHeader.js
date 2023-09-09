@@ -17,9 +17,32 @@
 */
 
 // reactstrap components
+import React, { useState, useEffect } from "react";
 import { Button, Container, Row, Col } from "reactstrap";
+import { getLoggedInUserInfo } from "service/api.js";
+
 
 const UserHeader = () => {
+
+  const [userInfo, setUserInfo] = useState();
+  useEffect(() => {
+    async function fetchUserInfo() {
+      try {
+        const userInfo = await getLoggedInUserInfo();
+        setUserInfo(userInfo);
+        console.log("User info:", userInfo);
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    }
+  
+    fetchUserInfo();
+  }, []);
+
+  if (!userInfo) {
+    return <div>Loading user data...</div>;
+  }
+
   return (
     <>
       <div
@@ -27,7 +50,7 @@ const UserHeader = () => {
         style={{
           minHeight: "600px",
           backgroundImage:
-            "url(" + require("../../assets/img/theme/profile-cover.jpg") + ")",
+            "",
           backgroundSize: "cover",
           backgroundPosition: "center top",
         }}
@@ -38,18 +61,13 @@ const UserHeader = () => {
         <Container className="d-flex align-items-center" fluid>
           <Row>
             <Col lg="7" md="10">
-              <h1 className="display-2 text-white">Hello Jesse</h1>
+              <h1 className="display-2 text-white">
+                Bienvenue <span>{userInfo.last_name},{userInfo.first_name}</span>
+              </h1>
               <p className="text-white mt-0 mb-5">
-                This is your profile page. You can see the progress you've made
-                with your work and manage your projects or assigned tasks
+                
               </p>
-              <Button
-                color="info"
-                href="#pablo"
-                onClick={(e) => e.preventDefault()}
-              >
-                Edit profile
-              </Button>
+            
             </Col>
           </Row>
         </Container>

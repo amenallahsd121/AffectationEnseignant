@@ -9,6 +9,9 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.files.base import ContentFile
+from rest_framework.authtoken.models import Token
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
 
@@ -23,7 +26,7 @@ def register_user_api_view(request):
             return Response({"message": "Utilisateur enregistré avec succès."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+"""
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def user_login(request):
@@ -55,24 +58,42 @@ def user_login(request):
 
     response = {"message": "Connexion avec succès!", "data": serializer.data}
     return Response(data=response, status=status.HTTP_200_OK)
+"""
+
 
 
 @api_view(['POST'])
-@permission_classes([permissions.AllowAny])
-@authentication_classes([])
+def user_login(request):
+    if request.method == 'POST':
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data['user']
+            login(request, user)
+            #Mise à jour last login dans la table users de django
+            user.last_login = timezone.now()
+            user.save()
+            #Mise à jour last login dans ma table perso
+            utilisateur = Utilisateur.objects.get(username=user.username)
+            utilisateur.last_login = timezone.now()
+            utilisateur.save()
+            
+            token, created = Token.objects.get_or_create(user=user)
+
+            return Response({'message': 'Connexion avec succès!', 'token': token.key}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def user_logout(request):
-    if 'logged_in_user' in request.session:
-        session_data = request.session['logged_in_user']
-        logout(request)
-    else:
-        session_data = None
+    logout(request)
 
-    return Response({
-        'message': "Déconnexion réussie!",
-        'session_data': session_data,  # Renvoyer les données de la session dans la réponse
-    }, status=status.HTTP_200_OK)
+    request.auth.delete()
 
+    return Response({'message': 'Déconnexion réussie!'}, status=status.HTTP_200_OK)
 
+"""
 @api_view(['GET'])
 @permission_classes([permissions.AllowAny])
 @authentication_classes([])
@@ -92,6 +113,18 @@ def get_logged_in_user_info(request):
                 return Response({"message": "Utilisateur non trouvé."}, status=status.HTTP_404_NOT_FOUND)
 
     return Response({"message": "Utilisateur non connecté."}, status=status.HTTP_401_UNAUTHORIZED)
+"""
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_logged_in_user_info(request):
+    user = request.user  
+    serializer = CustomUserInfoSerializer(user)
+
+    return Response(serializer.data)
+
 
 
 @api_view(['GET'])
@@ -411,7 +444,8 @@ def updateModule(request, id=None):
             # Check if the new file is different from the existing one
             if module.fiche_module.read() != new_fiche_module.read():
                 module.fiche_module.save(new_fiche_module.name, new_fiche_module, save=True)
-
+            else :
+                return
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -29,6 +29,8 @@ export const user_login = async (Utilisateur) => {
       },
     });
     console.log("Login response:", response.data);
+    // Stockez le token dans localStorage
+    localStorage.setItem('userToken', response.data.token);
     return response.data;
   } catch (error) {
     console.error("Error while logging in:", error);
@@ -36,11 +38,41 @@ export const user_login = async (Utilisateur) => {
   }
 };
 
+export const user_logout = async () => {
+  console.log("Sending logout request...");
+  try {
+    // Récupérez le token depuis localStorage
+    const userToken = localStorage.getItem('userToken');
+
+    const config = {
+      headers: {
+        Authorization: `Token ${userToken}`,
+      },
+    };
+
+    const response = await axios.post(url+"logout", {}, config);
+
+    console.log("logout response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error while logging out:", error);
+    throw error;
+  }
+};
+
+
 export const getLoggedInUserInfo = async () => {
   console.log("Sending user_info request...");
   try {
-    const response = await axios.get(`${url}user-info`, {
+    // Récupérez le token depuis localStorage
+    const userToken = localStorage.getItem('userToken');
+
+    const response = await axios.get(url+"user-info", {
+      headers: {
+        Authorization: `Token ${userToken}`,
+      },
     });
+
     console.log("User info response:", response.data);
     return response.data;
   } catch (error) {
@@ -48,6 +80,7 @@ export const getLoggedInUserInfo = async () => {
     throw error;
   }
 };
+
 
 
 export const list_users = async () => {

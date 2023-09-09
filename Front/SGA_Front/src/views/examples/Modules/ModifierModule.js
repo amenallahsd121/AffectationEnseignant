@@ -12,7 +12,7 @@ import {
   Col,
 } from "reactstrap";
 import Header from "components/Headers/Header";
-import { updateModule, getModule , getCompetences , list_users } from "service/api";
+import { updateModule, getModule , getCompetences , list_user } from "service/api";
 import { useNavigate, useParams } from "react-router-dom";
 
 const ModifierModule = () => {
@@ -43,7 +43,7 @@ const ModifierModule = () => {
 
   useEffect(() => {
     
-    list_users().then((response) => {
+    list_user().then((response) => {
       setResponsableOptions(response);
     });
   }, []);

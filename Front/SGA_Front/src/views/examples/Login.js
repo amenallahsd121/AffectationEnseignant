@@ -36,7 +36,7 @@ import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   
 
@@ -45,7 +45,7 @@ const Login = () => {
 
     // Make the API call to sign in the user
     try {
-      const response = await user_login({ email, password });
+      const response = await user_login({ username, password });
       // Assuming the response contains a 'data' field with a success message
       console.log(response.message);
       if (response.message === "Connexion avec succès!") {
@@ -74,15 +74,16 @@ const Login = () => {
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">
                     <InputGroupText>
-                      <i className="ni ni-email-83" />
+                      <i className="ni ni-hat-3" />
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
-                    placeholder="Email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    autoComplete="new-email"
+                      placeholder="Pseudo"
+                      type="text"
+                      name="username"
+                      value={username}
+                      autoComplete="off"
+                      onChange={(e) => setUsername(e.target.value)}
                   />
                 </InputGroup>
               </FormGroup>

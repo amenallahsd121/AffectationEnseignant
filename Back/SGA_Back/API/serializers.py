@@ -6,6 +6,9 @@ from Classe.models import Classe
 from Competence.models import Competence
 from Module.models import Module
 from rest_framework.exceptions import ValidationError
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
 
 
 
@@ -16,7 +19,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Utilisateur
-        fields = ('id', 'username', 'nom_utilisateur', 'prenom_utilisateur', 'email', 'password','photo_de_profil','numero_de_telephone','grade')
+        fields = ['username', 'nom_utilisateur', 'prenom_utilisateur', 'email', 'photo_de_profil', 'numero_de_telephone', 'grade']
+
 
     def get_grade(self, user):
         # Serialize the 'grade' field to a list of role names
@@ -27,6 +31,13 @@ class CustomUserSerializer(serializers.ModelSerializer):
             return grade_list[0]
         else:
             return ''
+        
+
+class CustomUserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields =  '__all__'
+
 """
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -48,8 +59,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 """
 
-from django.contrib.auth.models import User
-
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Utilisateur
@@ -63,6 +72,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
+            first_name=validated_data['prenom_utilisateur'],
+            last_name=validated_data['nom_utilisateur'],
             is_superuser=is_superuser,
             is_staff=is_superuser  # Définir is_staff en fonction de la valeur de is_superuser
         )
@@ -79,7 +90,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         utilisateur.grade.set(grade_data)  # Définir la relation ManyToMany
         return utilisateur
 
-
+""""
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
@@ -98,6 +109,30 @@ class UserLoginSerializer(serializers.Serializer):
             raise ValidationError('Informations d identification non valides. Veuillez vérifier votre courriel et votre mot de passe.')
 
         return data
+"""
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        username = data.get('username')
+        password = data.get('password')
+
+        if username and password:
+            user = authenticate(username=username, password=password)
+
+            if user:
+                if not user.is_active:
+                    raise serializers.ValidationError("User is inactive.")
+                data['user'] = user
+            else:
+                raise serializers.ValidationError("Unable to log in with provided credentials.")
+        else:
+            raise serializers.ValidationError("Must include 'username' and 'password'.")
+
+        return data
+
 
 
 # Option
