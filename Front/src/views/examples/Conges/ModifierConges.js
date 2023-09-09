@@ -178,47 +178,36 @@ const ModifierConges = () => {
                       </Col>
                     </Row>
 
-                    <Row>
-                      <Col xs="12">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="datedebut"
-                          >
-                            Date début du congé
-                          </label>
-                          <DatePicker
-                            className="form-control form-control-alternative"
-                            selected={startDate}
-                            onChange={(date) => setStartDate(date)}
-                            dateFormat="yyyy-MM-dd"
-                            placeholderText="Date début"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
+
 
                     <Row>
-                      <Col xs="12">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="datefin"
-                          >
-                            Date de reprise
-                          </label>
-                          <DatePicker
-                            className="form-control form-control-alternative"
-                            selected={finDate}
-                            onChange={(date) => setFinDate(date)}
-                            minDate={startDate}
-                            excludeDates={[startDate]} 
-                            dateFormat="yyyy-MM-dd"
-                            placeholderText="Date de reprise"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
+  <Col xs="6">
+    <FormGroup>
+      <label className="form-control-label">Date de début</label>
+      <Input
+        className="form-control-alternative"
+        type="date"
+        value={startDate ? startDate.toISOString().split("T")[0] : ""}
+        onChange={(e) => setStartDate(new Date(e.target.value))}
+      />
+    </FormGroup>
+  </Col>
+  <Col xs="6">
+    <FormGroup>
+      <label className="form-control-label">Date de reprise</label>
+      <Input
+        className="form-control-alternative"
+        type="date"
+        value={finDate ? finDate.toISOString().split("T")[0] : ""}
+        onChange={(e) => setFinDate(new Date(e.target.value))}
+        min={startDate ? startDate.toISOString().split("T")[0] : ""}
+      />
+    </FormGroup>
+  </Col>
+</Row>
+
+                   
+
 
                     <Row className="justify-content-center">
                       <Col xs="12" className="text-center">
