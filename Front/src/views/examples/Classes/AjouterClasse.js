@@ -21,6 +21,10 @@ const AjouterClasse = () => {
   const [niveaurelatif, setNiveauRealtif] = useState("");
   const [niveaux, setNiveaux] = useState([]);
 
+  // Add state variables for validation errors
+  const [nomClasseError, setNomClasseError] = useState("");
+  const [niveaurelatifError, setNiveauRealtifError] = useState("");
+
   useEffect(() => {
     const fetchNiveauxData = async () => {
       try {
@@ -40,23 +44,37 @@ const AjouterClasse = () => {
   const handleAjouterClick = async (e) => {
     e.preventDefault();
 
-    if (nomClasse && niveaurelatif) {
+    // Reset previous validation errors
+    setNomClasseError("");
+    setNiveauRealtifError("");
+
+    // Validation checks
+    let isValid = true;
+
+    if (!nomClasse) {
+      setNomClasseError("Le nom de la classe est obligatoire");
+      isValid = false;
+    }
+
+    if (!niveaurelatif) {
+      setNiveauRealtifError("Le niveau relatif est obligatoire");
+      isValid = false;
+    }
+
+    // Proceed with adding the class if all fields are valid
+    if (isValid) {
       try {
-        
         const selectedNiveau = niveaux.find(
           (niveau) => niveau.nom === niveaurelatif
         );
 
         if (selectedNiveau) {
-          
           const classeData = {
             nom: nomClasse,
             niveau: selectedNiveau.id,
           };
 
-          
           const response = await addClasse(classeData);
-
           navigate("/admin/classes");
         } else {
           console.error("Selected niveau not found.");
@@ -64,8 +82,6 @@ const AjouterClasse = () => {
       } catch (error) {
         console.error("Error:", error);
       }
-    } else {
-     
     }
   };
 
@@ -74,7 +90,7 @@ const AjouterClasse = () => {
       <Header />
       <div className="bg-secondary" style={{ minHeight: "100vh" }}>
         <Container className="mt--7" fluid>
-        <Row style={{ marginTop: '150px' }} className="justify-content-center" >  
+          <Row style={{ marginTop: '150px' }} className="justify-content-center" >  
             <Col lg="10">
               <Card className="shadow p-4">
                 <CardHeader className="bg-white border-0">
@@ -106,6 +122,10 @@ const AjouterClasse = () => {
                             value={nomClasse}
                             onChange={(e) => setNomClasse(e.target.value)}
                           />
+                          {/* Display error message */}
+                          {nomClasseError && (
+                            <div className="text-danger">{nomClasseError}</div>
+                          )}
                         </FormGroup>
                       </Col>
                     </Row>
@@ -134,6 +154,10 @@ const AjouterClasse = () => {
                               </option>
                             ))}
                           </Input>
+                          {/* Display error message */}
+                          {niveaurelatifError && (
+                            <div className="text-danger">{niveaurelatifError}</div>
+                          )}
                         </FormGroup>
                       </Col>
                     </Row>

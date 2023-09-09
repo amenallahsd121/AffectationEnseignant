@@ -20,7 +20,12 @@ const AjouterConfiguration = () => {
   const [AnnéeUniversitaire, setAnnéeUniversitaire] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [archive, setArchive] = useState("Non Archivée"); 
+  const [archive, setArchive] = useState("Non Archivée");
+
+  // Add state variables for validation
+  const [annéeUniversitaireError, setAnnéeUniversitaireError] = useState("");
+  const [startDateError, setStartDateError] = useState("");
+  const [endDateError, setEndDateError] = useState("");
 
   const handleAnnulerClick = () => {
     navigate("/admin/configuration");
@@ -29,20 +34,44 @@ const AjouterConfiguration = () => {
   const handleAjouterClick = async (e) => {
     e.preventDefault();
 
-   
-    const configurationData = {
-      Année_Universitaire: AnnéeUniversitaire,
-      Archive: archive,
-      DD_Annee: startDate,
-      DF_Annee: endDate,
-    };
+    let isValid = true;
 
-    try {
-      const response = await addConfiguration(configurationData);
-      navigate("/admin/configuration");
+    if (!AnnéeUniversitaire.trim()) {
+      setAnnéeUniversitaireError("L'année Universitaire est obligatoire");
+      isValid = false;
+    } else {
+      setAnnéeUniversitaireError("");
+    }
 
-    } catch (error) {
-      console.error("Error:", error);
+    if (!startDate) {
+      setStartDateError("Date début est obligatoire");
+      isValid = false;
+    } else {
+      setStartDateError("");
+    }
+
+    if (!endDate) {
+      setEndDateError("Date fin est obligatoire");
+      isValid = false;
+    } else {
+      setEndDateError("");
+    }
+
+    // If all fields are valid, proceed with the API call
+    if (isValid) {
+      const configurationData = {
+        Année_Universitaire: AnnéeUniversitaire,
+        Archive: archive,
+        DD_Annee: startDate,
+        DF_Annee: endDate,
+      };
+
+      try {
+        const response = await addConfiguration(configurationData);
+        navigate("/admin/configuration");
+      } catch (error) {
+        console.error("Error:", error);
+      }
     }
   };
 
@@ -81,16 +110,26 @@ const AjouterConfiguration = () => {
                             placeholder="Exemple : 2021/2022"
                             type="text"
                             value={AnnéeUniversitaire}
-                            onChange={(e) => setAnnéeUniversitaire(e.target.value)}
+                            onChange={(e) =>
+                              setAnnéeUniversitaire(e.target.value)
+                            }
                           />
+                          {/* Display error message */}
+                          {annéeUniversitaireError && (
+                            <div className="text-danger">
+                              {annéeUniversitaireError}
+                            </div>
+                          )}
                         </FormGroup>
                       </Col>
                     </Row>
+
                     <Row>
-                      <Col xs="12">
+                      <Col xs="12" md="6">
+                        {" "}
                         <FormGroup>
                           <label className="form-control-label">
-                            Date de début
+                            Date début
                           </label>
                           <Input
                             className="form-control-alternative"
@@ -98,30 +137,33 @@ const AjouterConfiguration = () => {
                             value={startDate}
                             onChange={(e) => setStartDate(e.target.value)}
                           />
+                          {startDateError && (
+                            <div className="text-danger">{startDateError}</div>
+                          )}
                         </FormGroup>
                       </Col>
-                    </Row>
-                    <Row>
-                      <Col xs="12">
+                      <Col xs="12" md="6">
+                        {" "}
                         <FormGroup>
-                          <label className="form-control-label">
-                            Date de fin
-                          </label>
+                          <label className="form-control-label">Date fin</label>
                           <Input
                             className="form-control-alternative"
                             type="date"
                             value={endDate}
                             onChange={(e) => setEndDate(e.target.value)}
                           />
+
+                          {endDateError && (
+                            <div className="text-danger">{endDateError}</div>
+                          )}
                         </FormGroup>
                       </Col>
                     </Row>
+
                     <Row>
                       <Col xs="12">
                         <FormGroup>
-                          <label className="form-control-label">
-                            Archive
-                          </label>
+                          <label className="form-control-label">Etat</label>
                           <Input
                             className="form-control-alternative"
                             type="select"
@@ -134,7 +176,9 @@ const AjouterConfiguration = () => {
                         </FormGroup>
                       </Col>
                     </Row>
-                    <Row className="justify-content-center">
+
+                    <Row className="justify-content-center mt-5">
+                      {" "}
                       <Col xs="12" className="text-center">
                         <Button color="primary" onClick={handleAjouterClick}>
                           Ajouter

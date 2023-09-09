@@ -19,10 +19,10 @@ import { useNavigate } from "react-router-dom";
 const AjouterConges = () => {
   
   const [startDate, setStartDate] = useState(null);
-  const [finDate, setFintDate] = useState(null);
+  const [finDate, setFinDate] = useState(null);
   const [users, setUsers] = useState([]);
-  const [selectedUserId, setSelectedUserId] = useState(""); // Add this line
-  const [selectedType, setSelectedType] = useState(""); // Add this line
+  const [selectedUserId, setSelectedUserId] = useState("");
+  const [selectedType, setSelectedType] = useState("");
 
   const differenceInDays =
     startDate && finDate
@@ -33,6 +33,12 @@ const AjouterConges = () => {
   const handleAnnulerClick = () => {
     navigate("/admin/conges");
   };
+
+  // Add state variables for validation errors
+  const [selectedUserError, setSelectedUserError] = useState("");
+  const [selectedTypeError, setSelectedTypeError] = useState("");
+  const [startDateError, setStartDateError] = useState("");
+  const [finDateError, setFinDateError] = useState("");
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -48,22 +54,54 @@ const AjouterConges = () => {
   }, []);
 
   const handleAjouterClick = async () => {
-    try {
-      const selectedUser = users.find(user => user.id === parseInt(selectedUserId));
-      const congesData = {
-        user: selectedUser.id,
-        type: selectedType,
-        duree: differenceInDays,
-        datedebut: startDate ? startDate.toISOString().split("T")[0] : null,
-        datefin: finDate ? finDate.toISOString().split("T")[0] : null,
-      };
+    // Reset previous validation errors
+    setSelectedUserError("");
+    setSelectedTypeError("");
+    setStartDateError("");
+    setFinDateError("");
 
-      const response = await addConges(congesData);
-      console.log("API Response:", response.data);
+    // Validation checks
+    let isValid = true;
 
-      navigate("/admin/conges");
-    } catch (error) {
-      console.error("Error adding conges:", error);
+    if (!selectedUserId) {
+      setSelectedUserError("Sélectionnez la personne concernée");
+      isValid = false;
+    }
+
+    if (!selectedType) {
+      setSelectedTypeError("Sélectionnez le type du congé");
+      isValid = false;
+    }
+
+    if (!startDate) {
+      setStartDateError("Sélectionnez la date de début");
+      isValid = false;
+    }
+
+    if (!finDate) {
+      setFinDateError("Sélectionnez la date de reprise");
+      isValid = false;
+    }
+
+    // Proceed with adding the congé if all fields are valid
+    if (isValid) {
+      try {
+        const selectedUser = users.find(user => user.id === parseInt(selectedUserId));
+        const congesData = {
+          user: selectedUser.id,
+          type: selectedType,
+          duree: differenceInDays,
+          datedebut: startDate.toISOString().split("T")[0],
+          datefin: finDate.toISOString().split("T")[0],
+        };
+
+        const response = await addConges(congesData);
+        console.log("API Response:", response.data);
+
+        navigate("/admin/conges");
+      } catch (error) {
+        console.error("Error adding conges:", error);
+      }
     }
   };
 
@@ -112,6 +150,10 @@ const AjouterConges = () => {
                               </option>
                             ))}
                           </Input>
+                          {/* Display error message */}
+                          {selectedUserError && (
+                            <div className="text-danger">{selectedUserError}</div>
+                          )}
                         </FormGroup>
                       </Col>
                     </Row>
@@ -137,6 +179,10 @@ const AjouterConges = () => {
                             <option>Maternité</option>
                             <option>Maladie</option>
                           </Input>
+                          {/* Display error message */}
+                          {selectedTypeError && (
+                            <div className="text-danger">{selectedTypeError}</div>
+                          )}
                         </FormGroup>
                       </Col>
                     </Row>
@@ -172,6 +218,10 @@ const AjouterConges = () => {
                             value={startDate ? startDate.toISOString().split("T")[0] : ""}
                             onChange={(e) => setStartDate(new Date(e.target.value))}
                           />
+                          {/* Display error message */}
+                          {startDateError && (
+                            <div className="text-danger">{startDateError}</div>
+                          )}
                         </FormGroup>
                       </Col>
                       <Col xs="6">
@@ -181,9 +231,13 @@ const AjouterConges = () => {
                             className="form-control-alternative"
                             type="date"
                             value={finDate ? finDate.toISOString().split("T")[0] : ""}
-                            onChange={(e) => setFintDate(new Date(e.target.value))}
+                            onChange={(e) => setFinDate(new Date(e.target.value))}
                             min={startDate ? startDate.toISOString().split("T")[0] : ""}
                           />
+                          {/* Display error message */}
+                          {finDateError && (
+                            <div className="text-danger">{finDateError}</div>
+                          )}
                         </FormGroup>
                       </Col>
                     </Row>

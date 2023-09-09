@@ -21,6 +21,10 @@ const ModifierNiveau = () => {
   const [nomNiveau, setNomNiveau] = useState("");
   const [nombreDeClasse, setNombreDeClasse] = useState("");
 
+  // Add state variables for validation errors
+  const [nomNiveauError, setNomNiveauError] = useState("");
+  const [nombreDeClasseError, setNombreDeClasseError] = useState("");
+
   useEffect(() => {
     const fetchNiveauDetails = async () => {
       try {
@@ -37,7 +41,23 @@ const ModifierNiveau = () => {
   }, [id]);
 
   const handleModifierClick = async () => {
-    if (nomNiveau && nombreDeClasse) {
+    setNomNiveauError("");
+    setNombreDeClasseError("");
+
+
+    let isValid = true;
+
+    if (!nomNiveau) {
+      setNomNiveauError("Le nom du niveau est obligatoire");
+      isValid = false;
+    }
+
+    if (!nombreDeClasse) {
+      setNombreDeClasseError("Le nombre des classes est obligatoire");
+      isValid = false;
+    }
+
+    if (isValid) {
       try {
         await updateNiveau(id, {
           nom: nomNiveau,
@@ -46,10 +66,7 @@ const ModifierNiveau = () => {
         navigate("/admin/niveaux");
       } catch (error) {
         console.error("Erreur lors de la modification du niveau:", error);
-        // Handle error, display an error message, or perform other actions
       }
-    } else {
-      // Handle missing data or show validation error
     }
   };
 
@@ -62,7 +79,7 @@ const ModifierNiveau = () => {
       <Header />
       <div className="bg-secondary" style={{ minHeight: "100vh" }}>
         <Container className="mt--7" fluid>
-        <Row style={{ marginTop: '150px' }} className="justify-content-center" >
+          <Row style={{ marginTop: '150px' }} className="justify-content-center" >
             <Col lg="8">
               <Card className="shadow p-4">
                 <CardHeader className="bg-white border-0">
@@ -94,6 +111,9 @@ const ModifierNiveau = () => {
                             value={nomNiveau}
                             onChange={(e) => setNomNiveau(e.target.value)}
                           />
+                          {nomNiveauError && (
+                            <div className="text-danger">{nomNiveauError}</div>
+                          )}
                         </FormGroup>
                       </Col>
                     </Row>
@@ -114,6 +134,11 @@ const ModifierNiveau = () => {
                             value={nombreDeClasse}
                             onChange={(e) => setNombreDeClasse(e.target.value)}
                           />
+                          {nombreDeClasseError && (
+                            <div className="text-danger">
+                              {nombreDeClasseError}
+                            </div>
+                          )}
                         </FormGroup>
                       </Col>
                     </Row>
@@ -123,12 +148,12 @@ const ModifierNiveau = () => {
                           Modifier
                         </Button>
                         <Button
-                        color="primary"
-                        onClick={handleAnnulerClick}
-                        size="mg"
-                      >
-                        Annuler
-                      </Button>
+                          color="primary"
+                          onClick={handleAnnulerClick}
+                          size="mg"
+                        >
+                          Annuler
+                        </Button>
                       </Col>
                     </Row>
                   </Form>

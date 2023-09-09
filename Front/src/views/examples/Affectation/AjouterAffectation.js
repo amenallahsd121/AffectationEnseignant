@@ -23,6 +23,10 @@ const AjouterAffectation = () => {
   const [utilisateurs, setUtilisateurs] = useState([]);
   const [modules, setModules] = useState([]);
 
+  const [selectedEnseignantError, setSelectedEnseignantError] = useState("");
+  const [selectedModuleError, setSelectedModuleError] = useState("");
+  const [selectedSemestreError, setSelectedSemestreError] = useState("");
+
   useEffect(() => {
     const fetchUtilisateursData = async () => {
       try {
@@ -42,7 +46,6 @@ const AjouterAffectation = () => {
         }
       };
       
-
     fetchUtilisateursData();
     fetchModulesData();
   }, []);
@@ -54,7 +57,30 @@ const AjouterAffectation = () => {
   const handleAjouterClick = async (e) => {
     e.preventDefault();
 
-    if (selectedEnseignant && selectedModule && selectedSemestre) {
+    let isValid = true;
+
+    if (!selectedEnseignant) {
+      setSelectedEnseignantError("Sélectionnez un enseignant");
+      isValid = false;
+    } else {
+      setSelectedEnseignantError("");
+    }
+
+    if (!selectedModule) {
+      setSelectedModuleError("Sélectionnez un module");
+      isValid = false;
+    } else {
+      setSelectedModuleError("");
+    }
+
+    if (!selectedSemestre) {
+      setSelectedSemestreError("Sélectionnez une semestre");
+      isValid = false;
+    } else {
+      setSelectedSemestreError("");
+    }
+
+    if (isValid) {
       try {
         const affectationData = {
           Utilisateur: selectedEnseignant,
@@ -68,8 +94,6 @@ const AjouterAffectation = () => {
       } catch (error) {
         console.error("Error:", error);
       }
-    } else {
-     
     }
   };
 
@@ -113,6 +137,11 @@ const AjouterAffectation = () => {
                           </option>
                         ))}
                       </Input>
+                      {selectedEnseignantError && (
+                        <div className="text-danger">
+                          {selectedEnseignantError}
+                        </div>
+                      )}
                     </FormGroup>
                     <FormGroup>
                       <label className="form-control-label" htmlFor="input-module">
@@ -134,6 +163,11 @@ const AjouterAffectation = () => {
                           </option>
                         ))}
                       </Input>
+                      {selectedModuleError && (
+                        <div className="text-danger">
+                          {selectedModuleError}
+                        </div>
+                      )}
                     </FormGroup>
                     <FormGroup>
                       <label className="form-control-label" htmlFor="input-semestre">
@@ -147,11 +181,16 @@ const AjouterAffectation = () => {
                         onChange={(e) => setSelectedSemestre(e.target.value)}
                       >
                         <option value="" disabled>
-                          Sélectionnez un Semestre
+                          Sélectionnez une Semestre
                         </option>
                         <option value="1">Semestre 1</option>
                         <option value="2">Semestre 2</option>
                       </Input>
+                      {selectedSemestreError && (
+                        <div className="text-danger">
+                          {selectedSemestreError}
+                        </div>
+                      )}
                     </FormGroup>
                     <Row className="justify-content-center">
                       <Col xs="12" className="text-center">

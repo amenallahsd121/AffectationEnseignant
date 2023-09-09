@@ -23,6 +23,12 @@ const ModifierConfiguration = () => {
   const [DD_Annee, setDD_Annee] = useState("");
   const [DF_Annee, setDF_Annee] = useState("");
 
+  // Add state variables for validation
+  const [annéeUniversitaireError, setAnnéeUniversitaireError] = useState("");
+  const [archiveError, setArchiveError] = useState("");
+  const [DD_AnneeError, setDD_AnneeError] = useState("");
+  const [DF_AnneeError, setDF_AnneeError] = useState("");
+
   useEffect(() => {
     const fetchConfigurationData = async () => {
       try {
@@ -45,7 +51,39 @@ const ModifierConfiguration = () => {
   };
 
   const handleModifierClick = async () => {
-    if (annéeUniversitaire && archive && DD_Annee && DF_Annee) {
+    // Validation checks
+    let isValid = true;
+
+    if (!annéeUniversitaire.trim()) {
+      setAnnéeUniversitaireError("L'année Universitaire est obligatoire");
+      isValid = false;
+    } else {
+      setAnnéeUniversitaireError("");
+    }
+
+    if (!archive) {
+      setArchiveError("L'Etat est obligatoire ");
+      isValid = false;
+    } else {
+      setArchiveError("");
+    }
+
+    if (!DD_Annee) {
+      setDD_AnneeError("Date début est obligatoire");
+      isValid = false;
+    } else {
+      setDD_AnneeError("");
+    }
+
+    if (!DF_Annee) {
+      setDF_AnneeError("Date fin est obligatoire");
+      isValid = false;
+    } else {
+      setDF_AnneeError("");
+    }
+
+    // If all fields are valid, proceed with the update
+    if (isValid) {
       try {
         await updateConfiguration(id, {
           Année_Universitaire: annéeUniversitaire,
@@ -57,8 +95,6 @@ const ModifierConfiguration = () => {
       } catch (error) {
         console.error("Error updating configuration:", error);
       }
-    } else {
-      
     }
   };
 
@@ -67,7 +103,10 @@ const ModifierConfiguration = () => {
       <Header />
       <div className="bg-secondary" style={{ minHeight: "100vh" }}>
         <Container className="mt--7" fluid>
-          <Row style={{ marginTop: "150px" }} className="justify-content-center">
+          <Row
+            style={{ marginTop: "150px" }}
+            className="justify-content-center"
+          >
             <Col lg="10">
               <Card className="shadow p-4">
                 <CardHeader className="bg-white border-0">
@@ -98,15 +137,57 @@ const ModifierConfiguration = () => {
                               setAnnéeUniversitaire(e.target.value)
                             }
                           />
+                          {/* Display error message */}
+                          {annéeUniversitaireError && (
+                            <div className="text-danger">
+                              {annéeUniversitaireError}
+                            </div>
+                          )}
                         </FormGroup>
                       </Col>
                     </Row>
+
+                    <Row>
+                      <Col xs="12" md="6">
+                        {" "}
+                        <FormGroup>
+                          <label className="form-control-label">
+                            Date début
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            type="date"
+                            value={DD_Annee}
+                            onChange={(e) => setDD_Annee(e.target.value)}
+                          />
+
+                          {DD_AnneeError && (
+                            <div className="text-danger">{DD_AnneeError}</div>
+                          )}
+                        </FormGroup>
+                      </Col>
+                      <Col xs="12" md="6">
+                        {" "}
+                        <FormGroup>
+                          <label className="form-control-label">Date fin</label>
+                          <Input
+                            className="form-control-alternative"
+                            type="date"
+                            value={DF_Annee}
+                            onChange={(e) => setDF_Annee(e.target.value)}
+                          />
+
+                          {DF_AnneeError && (
+                            <div className="text-danger">{DF_AnneeError}</div>
+                          )}
+                        </FormGroup>
+                      </Col>
+                    </Row>
+
                     <Row>
                       <Col xs="12">
                         <FormGroup>
-                          <label className="form-control-label">
-                            Archive
-                          </label>
+                          <label className="form-control-label">Etat</label>
                           <Input
                             className="form-control-alternative"
                             type="select"
@@ -116,40 +197,17 @@ const ModifierConfiguration = () => {
                             <option value="Archivée">Archivée</option>
                             <option value="Non Archivée">Non Archivée</option>
                           </Input>
+                          {archiveError && (
+                            <div className="text-danger">{archiveError}</div>
+                          )}
                         </FormGroup>
                       </Col>
                     </Row>
-                    <Row>
-                      <Col xs="12">
-                        <FormGroup>
-                          <label className="form-control-label">
-                            Date de début
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            type="date"
-                            value={DD_Annee}
-                            onChange={(e) => setDD_Annee(e.target.value)}
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col xs="12">
-                        <FormGroup>
-                          <label className="form-control-label">
-                            Date de fin
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            type="date"
-                            value={DF_Annee}
-                            onChange={(e) => setDF_Annee(e.target.value)}
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row className="justify-content-center">
+
+                    <Row
+                      className="justify-content-center"
+                      style={{ marginTop: "35px" }}
+                    >
                       <Col xs="12" className="text-center">
                         <Button color="primary" onClick={handleModifierClick}>
                           Modifier

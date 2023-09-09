@@ -13,6 +13,11 @@ import { useState, useEffect } from "react";
 import { deleteConges, getCongess } from "../../../service/api";
 import { useNavigate } from "react-router-dom";
 
+const formatDate = (dateString) => {
+  const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+};
+
 const Conges = () => {
   const navigate = useNavigate();
 
@@ -31,7 +36,7 @@ const Conges = () => {
     if (confirmDelete) {
       try {
         await deleteConges(congesId);
-        fetchData(); 
+        fetchData();
       } catch (error) {
         console.error("Error deleting congé:", error);
       }
@@ -51,9 +56,7 @@ const Conges = () => {
 
   useEffect(() => {
     fetchData();
-  }, []); 
-
-
+  }, []);
 
   return (
     <>
@@ -84,11 +87,13 @@ const Conges = () => {
               >
                 <CardBody>
                   <div style={{ textAlign: "center" }}>
-                    <CardTitle>Nom & Prénom : {conges.nom} {conges.prenom} </CardTitle>
+                    <CardTitle>
+                      Nom & Prénom : {conges.nom} {conges.prenom}{" "}
+                    </CardTitle>
                     <CardTitle>Type du congé: {conges.type}</CardTitle>
                     <CardTitle>Durée: {conges.duree} Jour(s)</CardTitle>
-                    <CardTitle>Date Début: {conges.datedebut}</CardTitle>
-                    <CardTitle>Date Reprise: {conges.datefin}</CardTitle>
+                    <CardTitle>Date Début: {formatDate(conges.datedebut)}</CardTitle>
+                    <CardTitle>Date Reprise: {formatDate(conges.datefin)}</CardTitle>
                   </div>
                   <div
                     style={{
@@ -97,10 +102,8 @@ const Conges = () => {
                       marginTop: "20px",
                     }}
                   >
-                    <Button color="info" type="button"
-                    onClick={() => handleModifierClick(conges.id)}>
+                    <Button color="info" type="button" onClick={() => handleModifierClick(conges.id)}>
                       Modifier
-                        
                     </Button>
                     <Button
                       color="danger"

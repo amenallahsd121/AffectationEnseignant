@@ -20,13 +20,35 @@ const AjouterNiveau = () => {
   const [nomNiveau, setNomNiveau] = useState("");
   const [nombreDeClasse, setNombreDeClasse] = useState("");
 
+
+  const [nomNiveauError, setNomNiveauError] = useState("");
+  const [nombreDeClasseError, setNombreDeClasseError] = useState("");
+
   const handleAnnulerClick = () => {
     navigate("/admin/niveaux");
   };
 
   const handleAjouterClick = async (e) => {
     e.preventDefault();
-    if (nomNiveau && nombreDeClasse) {
+
+
+    let isValid = true;
+
+    if (!nomNiveau.trim()) {
+      setNomNiveauError("Le nom du niveau est obligatoire");
+      isValid = false;
+    } else {
+      setNomNiveauError("");
+    }
+
+    if (!nombreDeClasse) {
+      setNombreDeClasseError("Le nombre de classes est obligatoire");
+      isValid = false;
+    } else {
+      setNombreDeClasseError("");
+    }
+
+    if (isValid) {
       try {
         const response = await addNiveau({
           nom: nomNiveau,
@@ -35,10 +57,7 @@ const AjouterNiveau = () => {
         navigate("/admin/niveaux");
       } catch (error) {
         console.error("Erreur lors de l'ajout du niveau:", error);
-        // Handle error, display an error message, or perform other actions
       }
-    } else {
-      // Handle missing data or show validation error
     }
   };
 
@@ -46,8 +65,8 @@ const AjouterNiveau = () => {
     <>
       <Header />
       <div className="bg-secondary" style={{ minHeight: "100vh" }}>
-        <Container className="mt--7" fluid  >
-          <Row style={{ marginTop: '150px' }} className="justify-content-center" >
+        <Container className="mt--7" fluid>
+          <Row style={{ marginTop: '150px' }} className="justify-content-center">
             <Col lg="10">
               <Card className="shadow p-4">
                 <CardHeader className="bg-white border-0">
@@ -79,6 +98,11 @@ const AjouterNiveau = () => {
                             value={nomNiveau}
                             onChange={(e) => setNomNiveau(e.target.value)}
                           />
+                          {nomNiveauError && (
+                            <div className="text-danger">
+                              {nomNiveauError}
+                            </div>
+                          )}
                         </FormGroup>
                       </Col>
                     </Row>
@@ -100,6 +124,11 @@ const AjouterNiveau = () => {
                             value={nombreDeClasse}
                             onChange={(e) => setNombreDeClasse(e.target.value)}
                           />
+                          {nombreDeClasseError && (
+                            <div className="text-danger">
+                              {nombreDeClasseError}
+                            </div>
+                          )}
                         </FormGroup>
                       </Col>
                     </Row>
@@ -112,12 +141,12 @@ const AjouterNiveau = () => {
                           Ajouter
                         </Button>
                         <Button
-                        color="primary"
-                        onClick={handleAnnulerClick}
-                        size="mg"
-                      >
-                        Annuler
-                      </Button>
+                          color="primary"
+                          onClick={handleAnnulerClick}
+                          size="mg"
+                        >
+                          Annuler
+                        </Button>
                       </Col>
                     </Row>
                   </Form>

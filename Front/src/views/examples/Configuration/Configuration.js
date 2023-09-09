@@ -24,11 +24,10 @@ const Configuration = () => {
         ...configuration,
       }));
 
-    
       modifiedConfigurations.sort((a, b) => {
         const numA = parseInt(a.Année_Universitaire, 10);
         const numB = parseInt(b.Année_Universitaire, 10);
-        return numB - numA; 
+        return numB - numA;
       });
 
       setConfigurations(modifiedConfigurations);
@@ -48,21 +47,31 @@ const Configuration = () => {
     if (confirmDelete) {
       try {
         await deleteConfiguration(configurationId);
-        fetchConfigurations(); 
+        fetchConfigurations();
       } catch (error) {
         console.error("Error deleting configuration:", error);
       }
     }
   };
 
- 
   const handleModifierClick = async (configurationId) => {
     navigate(`/admin/modifierconfiguration/${configurationId}`);
   };
 
   useEffect(() => {
-    fetchConfigurations(); 
+    fetchConfigurations();
   }, []);
+
+
+  const formatAnnéeUniversitaire = (année) => {
+    const [startYear, endYear] = année.split("/");
+    return `${startYear}/${endYear}`;
+  };
+
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
 
   return (
     <>
@@ -111,19 +120,18 @@ const Configuration = () => {
                     <tr key={configuration.id}>
                       <th scope="row"></th>
                       <td style={{ verticalAlign: "middle" }}>
-                        {configuration.Année_Universitaire}
+                        {formatAnnéeUniversitaire(configuration.Année_Universitaire)}
                       </td>
                       <td
                         style={{ verticalAlign: "middle", textAlign: "center" }}
                       >
-                        {configuration.DD_Annee}
+                        {formatDate(configuration.DD_Annee)}
                       </td>
                       <td
                         style={{ verticalAlign: "middle", textAlign: "center" }}
                       >
-                        {configuration.DF_Annee}
+                        {formatDate(configuration.DF_Annee)}
                       </td>
-
                       <td
                         style={{ verticalAlign: "middle", textAlign: "center" }}
                       >
@@ -136,16 +144,13 @@ const Configuration = () => {
                           {configuration.Archive}
                         </Badge>
                       </td>
-
                       <td className="text-right">
                         <Button
                           className="mr-2"
                           color="info"
                           size="sm"
                           style={{ marginLeft: "20px" }}
-                          onClick={() =>
-                            handleModifierClick(configuration.id)
-                          }
+                          onClick={() => handleModifierClick(configuration.id)}
                         >
                           Modifier
                         </Button>
@@ -154,9 +159,7 @@ const Configuration = () => {
                           color="danger"
                           size="sm"
                           style={{ marginLeft: "20px" }}
-                          onClick={() =>
-                            handleSupprimerClick(configuration.id)
-                          }
+                          onClick={() => handleSupprimerClick(configuration.id)}
                         >
                           Supprimer
                         </Button>

@@ -22,13 +22,17 @@ const ModifierClasse = () => {
   const [niveaurelatif, setNiveauRealtif] = useState("");
   const [niveaux, setNiveaux] = useState([]);
 
+  // Add state variables for validation errors
+  const [nomClasseError, setNomClasseError] = useState("");
+  const [niveaurelatifError, setNiveauRealtifError] = useState("");
+
   useEffect(() => {
     const fetchClasseData = async () => {
       try {
         const responseClasse = await getClasses(id);
         setNomClasse(responseClasse.data.nom);
         setNiveauRealtif(responseClasse.data.niveau);
-        /////////////////////////////////////////////////////////////////////////////////////////////
+
         const responseNiveaux = await getNiveaux();
         setNiveaux(responseNiveaux.data);
       } catch (error) {
@@ -44,7 +48,25 @@ const ModifierClasse = () => {
   };
 
   const handleModifierClick = async () => {
-    if (nomClasse && niveaurelatif) {
+    // Reset previous validation errors
+    setNomClasseError("");
+    setNiveauRealtifError("");
+
+    // Validation checks
+    let isValid = true;
+
+    if (!nomClasse) {
+      setNomClasseError("Le nom de la classe est obligatoire");
+      isValid = false;
+    }
+
+    if (!niveaurelatif) {
+      setNiveauRealtifError("Le niveau relatif est obligatoire");
+      isValid = false;
+    }
+
+    // Proceed with updating the class if all fields are valid
+    if (isValid) {
       try {
         await updateClasse(id, {
           nom: nomClasse,
@@ -54,15 +76,15 @@ const ModifierClasse = () => {
       } catch (error) {
         console.error("Erreur lors de la modification du Classe:", error);
       }
-    } else {
     }
   };
+
   return (
     <>
       <Header />
       <div className="bg-secondary" style={{ minHeight: "100vh" }}>
         <Container className="mt--7" fluid>
-        <Row style={{ marginTop: '150px' }} className="justify-content-center" >
+          <Row style={{ marginTop: '150px' }} className="justify-content-center" >
             <Col lg="10">
               <Card className="shadow p-4">
                 <CardHeader className="bg-white border-0">
@@ -94,6 +116,10 @@ const ModifierClasse = () => {
                             value={nomClasse}
                             onChange={(e) => setNomClasse(e.target.value)}
                           />
+                          {/* Display error message */}
+                          {nomClasseError && (
+                            <div className="text-danger">{nomClasseError}</div>
+                          )}
                         </FormGroup>
                       </Col>
                     </Row>
@@ -119,6 +145,12 @@ const ModifierClasse = () => {
                               </option>
                             ))}
                           </Input>
+                          {/* Display error message */}
+                          {niveaurelatifError && (
+                            <div className="text-danger">
+                              {niveaurelatifError}
+                            </div>
+                          )}
                         </FormGroup>
                       </Col>
                     </Row>
