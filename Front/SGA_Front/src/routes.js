@@ -5,6 +5,7 @@ import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
 import Tables from "views/examples/Tables.js";
 import UpdateUser from "views/examples/UpdateUser.js";
+import UpdateUserForUser from "views/examples/UpdateUserForUser.js";
 import Icons from "views/examples/Icons.js";
 import AjouterOption from "views/examples/Options/AjouterOption";
 import Options from "views/examples/Options/Options";
@@ -57,6 +58,12 @@ var routes = [
   {
     path: "/modifierutilisateur/:id",
     component: <UpdateUser/>,
+    layout: "/admin",
+   
+  },
+  {
+    path: "/modifiercompte/:id",
+    component: <UpdateUserForUser/>,
     layout: "/admin",
    
   },

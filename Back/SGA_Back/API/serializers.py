@@ -3,6 +3,7 @@ from Utilisateur.models import Utilisateur
 from Niveau.models import Niveau
 from Option.models import Option
 from Classe.models import Classe
+from Role.models import Role
 from Competence.models import Competence
 from Module.models import Module
 from rest_framework.exceptions import ValidationError
@@ -12,6 +13,13 @@ from rest_framework.authtoken.models import Token
 
 
 
+
+#Role
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = '__all__'
+
 #Utilisateur 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -19,7 +27,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Utilisateur
-        fields = ['username', 'nom_utilisateur', 'prenom_utilisateur', 'email', 'photo_de_profil', 'numero_de_telephone', 'grade']
+        fields = ['id','username', 'nom_utilisateur', 'prenom_utilisateur', 'email','password', 'photo_de_profil', 'numero_de_telephone', 'grade']
 
 
     def get_grade(self, user):

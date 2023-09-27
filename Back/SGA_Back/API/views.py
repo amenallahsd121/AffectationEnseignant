@@ -457,3 +457,19 @@ def deleteModule(request, id=None):
     module = Module.objects.get(id=id)
     module.delete()
     return Response("Module supprimé avec succès!")
+
+
+
+#Role
+
+@api_view(['GET'])
+def getRoles(request):
+    roles = Role.objects.all()
+    serializer = RoleSerializer(roles, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def getRole(request, id=None):
+    role = Role.objects.get(id=id)
+    serializer = RoleSerializer(role)
+    return Response(serializer.data, status=status.HTTP_200_OK)

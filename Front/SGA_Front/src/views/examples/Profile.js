@@ -28,11 +28,30 @@ import {
   Container,
   Row,
   Col,
+  Button,
 } from "reactstrap";
 import UserHeader from "components/Headers/UserHeader.js";
 import { getLoggedInUserInfo } from "service/api.js";
+import { useNavigate } from "react-router-dom";
+import { delete_user } from "service/api";
 
 const Profile = () => {
+
+  const navigate = useNavigate();
+
+  const handleModifierClick = (utilisateurId) => {
+    navigate(`/admin/modifiercompte/${utilisateurId}`);
+ }; 
+
+ const handleSupprimerClick = async (utilisateurId) => {
+  try {
+    await delete_user(utilisateurId);
+    navigate(`/auth/register`);
+  } catch (error) {
+    console.error("Error deleting user:", error);
+  }
+};
+
   const [userInfo, setUserInfo] = useState();
   
   useEffect(() => {
@@ -95,9 +114,19 @@ const Profile = () => {
                   </div>
                   <div className="h5 mt-4">
                     <i className="ni business_briefcase-24 mr-2" />
-                    Vous nous avez rejoignez le : {userInfo.date_joined}
+                    Vous nous avez rejoignez le : {userInfo.date_joined.slice(0, 19)}
                   </div>
-                  
+                  <br></br>
+                  <div style={{ display: 'flex', justifyContent: 'right' }}>
+                      <Button
+                        className="mr-7"
+                        color="danger"
+                        size="sm"
+                        onClick={() => handleSupprimerClick(userInfo.id)}
+                      >
+                        Supprimer mon compte
+                      </Button>
+                  </div>
                   <hr className="my-4" />
                   <p>
                     ESPRIT: Ecole Sup Privée d'Ingénierie et de Technologie
@@ -198,6 +227,15 @@ const Profile = () => {
                     </Row>
                   </div>
                   <hr className="my-4" />
+                  <Button
+                          className="mr-2"
+                          color="info"
+                          size="sm"
+                          style={{ marginLeft: "20px" }}
+                          onClick={() => handleModifierClick(userInfo.id)}
+                        >
+                          Modifier
+                  </Button>
                   {/* Address */}
                   
           

@@ -12,7 +12,7 @@ import {
   Col,
 } from "reactstrap";
 import Header from "components/Headers/Header";
-import { updateModule, getModule , getCompetences , list_user } from "service/api";
+import { updateModule, getModule , getCompetences , list_users } from "service/api";
 import { useNavigate, useParams } from "react-router-dom";
 
 const ModifierModule = () => {
@@ -29,22 +29,22 @@ const ModifierModule = () => {
 
 
 
-  const [competenceOptions, setCompetenceOptions] = useState([]);
+  const [competenceModules, setCompetenceModules] = useState([]);
 
   useEffect(() => {
 
     getCompetences().then((response) => {
-      setCompetenceOptions(response.data);
+      setCompetenceModules(response.data);
     });
   }, []);
 
 
-  const [responsableOptions, setResponsableOptions] = useState([]);
+  const [responsableModules, setResponsableModules] = useState([]);
 
   useEffect(() => {
     
-    list_user().then((response) => {
-      setResponsableOptions(response);
+    list_users().then((response) => {
+    setResponsableModules(response);
     });
   }, []);
 
@@ -204,7 +204,7 @@ const ModifierModule = () => {
                               )
                             }
                           >
-                            {competenceOptions?.map((competence) => (
+                            {competenceModules?.map((competence) => (
                               <option key={competence.id} value={competence.id}>
                                 {competence.nom} 
                               </option>
@@ -288,11 +288,11 @@ const ModifierModule = () => {
                             value={responsableModule}
                             onChange={(e) => setResponsableModule(e.target.value)}
                           >
-                            <option value="">Sélectionner le responsable</option>
-                            {responsableOptions?.map((utilisateur) => (
+                            {responsableModules?.map((utilisateur) => (
                               <option key={utilisateur.id} value={utilisateur.id}>
                                 {utilisateur.username} 
                               </option>
+
                             ))}
                           </Input>
                         </FormGroup>

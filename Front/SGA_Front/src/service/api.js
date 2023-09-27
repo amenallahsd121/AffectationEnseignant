@@ -97,7 +97,7 @@ export const list_users = async () => {
     }
   };
 
-  export const list_user = async (id) => {
+export const list_user = async (id) => {
     console.log("Sending list_user details request...");
     try {
       const response = await axios.get(url+"list_user/"+id);
@@ -105,7 +105,7 @@ export const list_users = async () => {
       console.log("Returned response data:", response);
       return response.data;
     } catch (error) {
-      console.error("Error while fetching users:", error);
+      console.error("Error while fetching user:", error);
       throw error;
     }
   };

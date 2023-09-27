@@ -46,7 +46,7 @@ const Utilisateurs = () => {
       await delete_user(utilisateurId);
       fetchData();
     } catch (error) {
-      console.error("Error deleting niveau:", error);
+      console.error("Error deleting user:", error);
     }
   };
 
